@@ -70,13 +70,13 @@ export function AccountProfilePage() {
             </ToolbarDescription>
           </ToolbarHeading>
         </Toolbar>
-        <Toolbar>
+        {/* <Toolbar>
           <ToolbarHeading>
             <Progress value={progress} />
             <Progress value={45} color="bg-green-600" label="Downloading" />
 
           </ToolbarHeading>
-        </Toolbar>
+        </Toolbar> */}
       </Container>
       <Container className="flex justify-between">
         <PageNavbar />

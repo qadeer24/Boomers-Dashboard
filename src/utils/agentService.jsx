@@ -8,7 +8,7 @@ export const getAgentById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getAgentStatusById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getCountytByStateId = () => http.get(`/states`);
 export const getprofileStatus = () => http.get(`/profile/completion`);
-export const updateLicenseInfo = (data, id) => http.postFormData(`/admin/agent/${id}/status`, data, {
+export const updateLicenseInfo = (data, id) => http.postFormData(`/admin/agents/licenses/${id}`, data, {
   headers: {}, // no need to set Content-Type manually
 });
 export const updateBankInfo = (data, id) => http.postFormData(`/admin/agents/bank-info/${id}`, data, {

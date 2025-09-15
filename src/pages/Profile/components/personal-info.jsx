@@ -70,6 +70,15 @@ const PersonalInfo = () => {
   }
 
 
+  async function urlToFile(url, filename) {
+    console.log("Converting URL to File:", url);
+    const response = await fetch('https://boomersinsuranceservices.com/be/public/storage/uploads/user/profile/original/agent_21_1757951889.jpg');
+    if (!response.ok) throw new Error("Failed to fetch file from URL");
+    const blob = await response.blob();
+    const mimeType = blob.type || "image/png";
+    return new File([blob], filename, { type: mimeType });
+  }
+
   const onSave = (newFile) => {
     const base64String = newFile; // your string
     setFile(base64ToFile(base64String, "profile.png"));
@@ -147,7 +156,16 @@ const PersonalInfo = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
-      formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
+      formData.append("description", data.description);
+      if (file) {
+        // user uploaded a new file
+        formData.append("profile", base64ToFile(file, "profile.png"));
+      } else if (data.profile && data.profile.startsWith("http")) {
+        // convert URL to File
+        const profileFile = await urlToFile(data.profile, "profile.png");
+        formData.append("profile", profileFile);
+      }
+      // formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -843,12 +861,18 @@ const Bio = () => {
       // Create FormData
       const formData = new FormData();
       formData.append("description", data.description);
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("gender", data.gender);
+      formData.append("npn", data.npn);
+      formData.append("dob", data.dob);
+      formData.append("phoneNumber", data.phoneNumber);
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
       });
 
-      updateAgent(formData, agentId)
+      updateAgent(formData, agentId, token)
         .then((response) => {
           console.log("Agent updated successfully:", response.data);
           setMessage("Agent updated successfully");
