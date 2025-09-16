@@ -16,45 +16,6 @@ import clsx from "clsx";
 import { useState } from 'react';
 
 export function AccountProfilePage() {
-  const { settings } = useSettings();
-  const progress = localStorage.getItem('user-info-prog');
-
-
-  const Progress = ({
-    value = 0,            // 0..100
-    height = "h-2",       // e.g. "h-1.5", "h-3"
-    rounded = "rounded-full",
-    color = "bg-blue-600",
-    showLabel = true,
-    className = "",
-    label = "Progress",
-  }) => {
-    const v = Math.min(100, Math.max(0, value)); // clamp 0..100
-
-    return (
-      <div className={`w-full ${className}`}>
-        {showLabel && (
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">{label}</span>
-            <span className="text-sm tabular-nums text-gray-600">{v}%</span>
-          </div>
-        )}
-
-        <div
-          className={`${height} w-full bg-gray-200 ${rounded}`}
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={v}
-        >
-          <div
-            className={`${height} ${rounded} ${color} transition-all duration-300`}
-            style={{ width: `${v}%` }}
-          />
-        </div>
-      </div>
-    );
-  };
 
   return (
     <Fragment>

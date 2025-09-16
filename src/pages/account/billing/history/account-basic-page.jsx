@@ -93,8 +93,6 @@ export function AccountHistoryPage() {
           </div>
           <ToolbarDescription>
             All Agents: 30,053    Active Agents: 20,204    Verified Agents: 18,100    Unverified Agents: 2104
-
-            Hellloooooooo
           </ToolbarDescription>
 
         </ToolbarHeading>

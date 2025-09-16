@@ -134,6 +134,7 @@ const PersonalInfo = () => {
       [name]: value
     }));
     setUpdate(true);
+    // console.log("Data changed:", { ...data, [name]: value })
   };
 
   // console.log("Data to update:", data);
@@ -157,14 +158,15 @@ const PersonalInfo = () => {
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
       formData.append("description", data.description);
-      if (file) {
-        // user uploaded a new file
-        formData.append("profile", base64ToFile(file, "profile.png"));
-      } else if (data.profile && data.profile.startsWith("http")) {
-        // convert URL to File
-        const profileFile = await urlToFile(data.profile, "profile.png");
-        formData.append("profile", profileFile);
-      }
+      // if (file) {
+      //   // user uploaded a new file
+      //   formData.append("profile", base64ToFile(file, "profile.png"));
+      // } else if (data.profile && data.profile.startsWith("http")) {
+      //   // convert URL to File
+      //   const profileFile = await urlToFile(data.profile, "profile.png");
+      //   formData.append("profile", profileFile);
+      // }
+      // formData.append("profile", data.profile); // This should be a File object
       // formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
@@ -304,7 +306,27 @@ const PersonalInfo = () => {
                 Gender
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} />
+                {/* <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} /> */}
+                <div className="py-4">
+                  <select
+                    className="border rounded-lg p-2 w-full"
+                    name="gender"
+                    value={data.gender || ""}
+                    onChange={handleChange}
+                    required
+                  >
+                    {/* Show only when gender is not selected */}
+                    {!data.gender && (
+                      <option value="">
+                        -- Select Gender --
+                      </option>
+                    )}
+
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+
+                </div>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -1069,7 +1091,7 @@ const LoginInfo = () => {
   return (
     <Card className="min-w-full">
       <CardHeader>
-        <CardTitle>Licensing Info</CardTitle>
+        <CardTitle>Login Info</CardTitle>
       </CardHeader>
       <CardContent className="kt-scrollable-x-auto pb-3 p-0">
         <Table className="align-middle text-sm text-muted-foreground">
@@ -1087,7 +1109,9 @@ const LoginInfo = () => {
                 Password
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                {data.password || 'N/A'}
+                <Button>
+                  Reset Password
+                </Button>
               </TableCell>
             </TableRow>
           </TableBody>

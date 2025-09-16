@@ -59,10 +59,6 @@ export const MENU_SIDEBAR = [
   // {
   //   title: 'Dashboards',
   //   icon: LayoutGrid,
-  //   children: [
-  //     { title: 'Light Sidebar', path: '/' },
-  //     { title: 'Dark Sidebar', path: '/dark-sidebar' },
-  //   ],
   // },
   {
     title: 'Dashboards',
@@ -70,13 +66,13 @@ export const MENU_SIDEBAR = [
     children: [
       { title: 'Recent Signup', path: '/recent-signups' },
       // { title: 'Profiles', path: '/admin/agent/detail/:id' },
-      { title: 'Policies', path: '/network/get-started' },
+      // { title: 'Policies', path: '/network/get-started' },
       { title: 'Carriers', path: '/public-profile/projects/3-columns' },
-      { title: 'Individuals', path: '/network/get-started' },
-      { title: 'Agents', path: '/network/get-started' },
+      // { title: 'Individuals', path: '/network/get-started' },
+      // { title: 'Agents', path: '/network/get-started' },
       { title: 'Leads', path: '/admin/leads' },
-      { title: 'Events', path: '/events' },
-      { title: 'More', path: '/network/get-started' },
+      // { title: 'Events', path: '/events' },
+      // { title: 'More', path: '/network/get-started' },
     ],
   },
   {
@@ -84,12 +80,12 @@ export const MENU_SIDEBAR = [
     icon: Users,
     path: '/public-profile/empty',
   },
-    {
+  {
     title: 'Leads',
     icon: Users,
     path: '/admin/leads',
   },
-  // {
+    // {
   //   title: 'Boomers Insurance',
   //   icon: LayoutGrid,
   //   children: [
@@ -618,97 +614,97 @@ export const MENU_MEGA = [
   {
     title: 'Dashboard',
     children: [
-      {
-        title: 'Dashboard',
-        children: [
-          {
-            children: [
-              {
-                title: 'Accounts',
-                // icon: Badge, 
-                path: '/recent-signups',
-              },
-              {
-                title: 'Profiles',
-                // icon: Coffee,
-                path: '/public-profile/profiles/creator',
-              },
-              {
-                title: 'Policies',
-                // icon: Building,
-                path: '/public-profile/profiles/company',
-              },
-              {
-                title: 'Carries',
-                // icon: Bitcoin,
-                path: '/public-profile/profiles/nft',
-              },
-              {
-                title: 'Individuals',
-                // icon: MessageSquare,
-                path: '/public-profile/profiles/blogger',
-              },
-            ],
-          },
-          {
-            children: [
-              {
-                title: 'Agents',
-                // icon: Monitor,
-                path: '/public-profile/profiles/crm',
-              },
-              {
-                title: 'Leads',
-                // icon: Ghost,
-                path: '/admin/leads',
-              },
-              {
-                title: 'Events',
-                // icon: Building,
-                path: '/events',
-              },
-              {
-                title: 'More',
-                // icon: MessageSquare,
-                path: '/public-profile/profiles/gamer',
-              },
-            ],
-          },
-          // {
-          //   children: [
-          //     {
-          //       title: 'Feeds',
-          //       icon: Book,
-          //       path: '/public-profile/profiles/feeds',
-          //     },
-          //     {
-          //       title: 'Plain',
-          //       icon: File,
-          //       path: '/public-profile/profiles/plain',
-          //     },
-          //     {
-          //       title: 'Modal',
-          //       icon: SquareMousePointer,
-          //       path: '/public-profile/profiles/modal',
-          //     },
-          //     {
-          //       title: 'Freelancer',
-          //       icon: Briefcase,
-          //       path: '#',
-          //       disabled: true,
-          //     },
-          //     { title: 'Developer', icon: Code, path: '#', disabled: true },
-          //     { title: 'Team', icon: Users, path: '#', disabled: true },
-          //     {
-          //       title: 'Events',
-          //       icon: CalendarCheck,
-          //       path: '#',
-          //       disabled: true,
-          //     },
-          //   ],
-          // },
-        ],
-      },
+      // {
+      //   title: 'Dashboard',
+      //   children: [
+      //     {
+      //       children: [
+      //         {
+      //           title: 'Accounts',
+      //           // icon: Badge, 
+      //           path: '/recent-signups',
+      //         },
+      //         {
+      //           title: 'Profiles',
+      //           // icon: Coffee,
+      //           path: '/public-profile/profiles/creator',
+      //         },
+      //         {
+      //           title: 'Policies',
+      //           // icon: Building,
+      //           path: '/public-profile/profiles/company',
+      //         },
+      //         {
+      //           title: 'Carries',
+      //           // icon: Bitcoin,
+      //           path: '/public-profile/profiles/nft',
+      //         },
+      //         {
+      //           title: 'Individuals',
+      //           // icon: MessageSquare,
+      //           path: '/public-profile/profiles/blogger',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       children: [
+      //         {
+      //           title: 'Agents',
+      //           // icon: Monitor,
+      //           path: '/public-profile/profiles/crm',
+      //         },
+      //         {
+      //           title: 'Leads',
+      //           // icon: Ghost,
+      //           path: '/admin/leads',
+      //         },
+      //         {
+      //           title: 'Events',
+      //           // icon: Building,
+      //           path: '/events',
+      //         },
+      //         {
+      //           title: 'More',
+      //           // icon: MessageSquare,
+      //           path: '/public-profile/profiles/gamer',
+      //         },
+      //       ],
+      //     },
+      //     // {
+      //     //   children: [
+      //     //     {
+      //     //       title: 'Feeds',
+      //     //       icon: Book,
+      //     //       path: '/public-profile/profiles/feeds',
+      //     //     },
+      //     //     {
+      //     //       title: 'Plain',
+      //     //       icon: File,
+      //     //       path: '/public-profile/profiles/plain',
+      //     //     },
+      //     //     {
+      //     //       title: 'Modal',
+      //     //       icon: SquareMousePointer,
+      //     //       path: '/public-profile/profiles/modal',
+      //     //     },
+      //     //     {
+      //     //       title: 'Freelancer',
+      //     //       icon: Briefcase,
+      //     //       path: '#',
+      //     //       disabled: true,
+      //     //     },
+      //     //     { title: 'Developer', icon: Code, path: '#', disabled: true },
+      //     //     { title: 'Team', icon: Users, path: '#', disabled: true },
+      //     //     {
+      //     //       title: 'Events',
+      //     //       icon: CalendarCheck,
+      //     //       path: '#',
+      //     //       disabled: true,
+      //     //     },
+      //     //   ],
+      //     // },
+      //   ],
+      // },
       // {
       //   title: 'Other Pages',
       //   children: [
@@ -771,309 +767,309 @@ export const MENU_MEGA = [
   },
   {
     title: 'Boomers Insurance',
-    children: [
-      {
-        title: 'General Pages',
-        children: [
-          { title: 'Integrations', icon: Plug, path: '/account/integrations' },
-          {
-            title: 'Notifications',
-            icon: Bell,
-            path: '/account/notifications',
-          },
-          { title: 'API Keys', icon: Key, path: '/account/api-keys' },
-          { title: 'Appearance', icon: Eye, path: '/account/appearance' },
-          {
-            title: 'Invite a Friend',
-            icon: UserCheck,
-            path: '/account/invite-a-friend',
-          },
-          { title: 'Activity', icon: LifeBuoy, path: '/account/activity' },
-          { title: 'Brand', icon: CheckCircle, disabled: true },
-          { title: 'Get Paid', icon: Euro, disabled: true },
-        ],
-      },
-      {
-        title: 'Other pages',
-        children: [
-          {
-            title: 'Account Home',
-            children: [
-              { title: 'Get Started', path: '/account/home/get-started' },
-              { title: 'User Profile', path: '/account/home/user-profile' },
-              {
-                title: 'Company Profile',
-                path: '/account/home/company-profile',
-              },
-              { title: 'With Sidebar', path: '/account/home/settings-sidebar' },
-              {
-                title: 'Enterprise',
-                path: '/account/home/settings-enterprise',
-              },
-              { title: 'Plain', path: '/account/home/settings-plain' },
-              { title: 'Modal', path: '/account/home/settings-modal' },
-            ],
-          },
-          {
-            title: 'Billing',
-            children: [
-              { title: 'Basic Billing', path: '/account/billing/basic' },
-              { title: 'Enterprise', path: '/account/billing/enterprise' },
-              { title: 'Plans', path: '/account/billing/plans' },
-              { title: 'Billing History', path: '/recent-signups' },
-              { title: 'Tax Info', disabled: true },
-              { title: 'Invoices', disabled: true },
-              { title: 'Gateaways', disabled: true },
-            ],
-          },
-          {
-            title: 'Security',
-            children: [
-              { title: 'Get Started', path: '/account/security/get-started' },
-              {
-                title: 'Security Overview',
-                path: '/account/security/overview',
-              },
-              {
-                title: 'IP Addresses',
-                path: '/account/security/allowed-ip-addresses',
-              },
-              {
-                title: 'Privacy Settings',
-                path: '/account/security/privacy-settings',
-              },
-              {
-                title: 'Device Management',
-                path: '/account/security/device-management',
-              },
-              {
-                title: 'Backup & Recovery',
-                path: '/account/security/backup-and-recovery',
-              },
-              {
-                title: 'Current Sessions',
-                path: '/account/security/current-sessions',
-              },
-              { title: 'Security Log', path: '/account/security/security-log' },
-            ],
-          },
-          {
-            title: 'Members & Roles',
-            children: [
-              { title: 'Teams Starter', path: '/account/members/team-starter' },
-              { title: 'Teams', path: '/account/members/teams' },
-              { title: 'Team Info', path: '/account/members/team-info' },
-              {
-                title: 'Members Starter',
-                path: '/account/members/members-starter',
-              },
-              { title: 'Team Members', path: '/account/members/team-members' },
-              {
-                title: 'Import Members',
-                path: '/account/members/import-members',
-              },
-              { title: 'Roles', path: '/account/members/roles' },
-              {
-                title: 'Permissions - Toggler',
-                path: '/account/members/permissions-toggle',
-              },
-              {
-                title: 'Permissions - Check',
-                path: '/account/members/permissions-check',
-              },
-            ],
-          },
-          {
-            title: 'Other Pages',
-            children: [
-              { title: 'Integrations', path: '/account/integrations' },
-              { title: 'Notifications', path: '/account/notifications' },
-              { title: 'API Keys', path: '/account/api-keys' },
-              { title: 'Appearance', path: '/account/appearance' },
-              { title: 'Invite a Friend', path: '/account/invite-a-friend' },
-              { title: 'Activity', path: '/account/activity' },
-            ],
-          },
-        ],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: 'General Pages',
+    //     children: [
+    //       { title: 'Integrations', icon: Plug, path: '/account/integrations' },
+    //       {
+    //         title: 'Notifications',
+    //         icon: Bell,
+    //         path: '/account/notifications',
+    //       },
+    //       { title: 'API Keys', icon: Key, path: '/account/api-keys' },
+    //       { title: 'Appearance', icon: Eye, path: '/account/appearance' },
+    //       {
+    //         title: 'Invite a Friend',
+    //         icon: UserCheck,
+    //         path: '/account/invite-a-friend',
+    //       },
+    //       { title: 'Activity', icon: LifeBuoy, path: '/account/activity' },
+    //       { title: 'Brand', icon: CheckCircle, disabled: true },
+    //       { title: 'Get Paid', icon: Euro, disabled: true },
+    //     ],
+    //   },
+    //   {
+    //     title: 'Other pages',
+    //     children: [
+    //       {
+    //         title: 'Account Home',
+    //         children: [
+    //           { title: 'Get Started', path: '/account/home/get-started' },
+    //           { title: 'User Profile', path: '/account/home/user-profile' },
+    //           {
+    //             title: 'Company Profile',
+    //             path: '/account/home/company-profile',
+    //           },
+    //           { title: 'With Sidebar', path: '/account/home/settings-sidebar' },
+    //           {
+    //             title: 'Enterprise',
+    //             path: '/account/home/settings-enterprise',
+    //           },
+    //           { title: 'Plain', path: '/account/home/settings-plain' },
+    //           { title: 'Modal', path: '/account/home/settings-modal' },
+    //         ],
+    //       },
+    //       {
+    //         title: 'Billing',
+    //         children: [
+    //           { title: 'Basic Billing', path: '/account/billing/basic' },
+    //           { title: 'Enterprise', path: '/account/billing/enterprise' },
+    //           { title: 'Plans', path: '/account/billing/plans' },
+    //           { title: 'Billing History', path: '/recent-signups' },
+    //           { title: 'Tax Info', disabled: true },
+    //           { title: 'Invoices', disabled: true },
+    //           { title: 'Gateaways', disabled: true },
+    //         ],
+    //       },
+    //       {
+    //         title: 'Security',
+    //         children: [
+    //           { title: 'Get Started', path: '/account/security/get-started' },
+    //           {
+    //             title: 'Security Overview',
+    //             path: '/account/security/overview',
+    //           },
+    //           {
+    //             title: 'IP Addresses',
+    //             path: '/account/security/allowed-ip-addresses',
+    //           },
+    //           {
+    //             title: 'Privacy Settings',
+    //             path: '/account/security/privacy-settings',
+    //           },
+    //           {
+    //             title: 'Device Management',
+    //             path: '/account/security/device-management',
+    //           },
+    //           {
+    //             title: 'Backup & Recovery',
+    //             path: '/account/security/backup-and-recovery',
+    //           },
+    //           {
+    //             title: 'Current Sessions',
+    //             path: '/account/security/current-sessions',
+    //           },
+    //           { title: 'Security Log', path: '/account/security/security-log' },
+    //         ],
+    //       },
+    //       {
+    //         title: 'Members & Roles',
+    //         children: [
+    //           { title: 'Teams Starter', path: '/account/members/team-starter' },
+    //           { title: 'Teams', path: '/account/members/teams' },
+    //           { title: 'Team Info', path: '/account/members/team-info' },
+    //           {
+    //             title: 'Members Starter',
+    //             path: '/account/members/members-starter',
+    //           },
+    //           { title: 'Team Members', path: '/account/members/team-members' },
+    //           {
+    //             title: 'Import Members',
+    //             path: '/account/members/import-members',
+    //           },
+    //           { title: 'Roles', path: '/account/members/roles' },
+    //           {
+    //             title: 'Permissions - Toggler',
+    //             path: '/account/members/permissions-toggle',
+    //           },
+    //           {
+    //             title: 'Permissions - Check',
+    //             path: '/account/members/permissions-check',
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         title: 'Other Pages',
+    //         children: [
+    //           { title: 'Integrations', path: '/account/integrations' },
+    //           { title: 'Notifications', path: '/account/notifications' },
+    //           { title: 'API Keys', path: '/account/api-keys' },
+    //           { title: 'Appearance', path: '/account/appearance' },
+    //           { title: 'Invite a Friend', path: '/account/invite-a-friend' },
+    //           { title: 'Activity', path: '/account/activity' },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
   },
   {
     title: 'Boomers Academy',
-    children: [
-      {
-        title: 'General Pages',
-        children: [
-          { title: 'Get Started', icon: Flag, path: '/network/get-started' },
-          { title: 'Colleagues', icon: Users, path: '#', disabled: true },
-          { title: 'Donators', icon: Heart, path: '#', disabled: true },
-          { title: 'Leads', icon: Zap, path: '#', disabled: true },
-        ],
-      },
-      {
-        title: 'Other pages',
-        children: [
-          {
-            title: 'User Cards',
-            children: [
-              { title: 'Mini Cards', path: '/network/user-cards/mini-cards' },
-              { title: 'Team Members', path: '/network/user-cards/team-crew' },
-              { title: 'Authors', path: '/network/user-cards/author' },
-              { title: 'NFT Users', path: '/network/user-cards/nft' },
-              { title: 'Social Users', path: '/network/user-cards/social' },
-              { title: 'Gamers', path: '#', disabled: true },
-            ],
-          },
-          {
-            title: 'User Base',
-            badge: 'Datatables',
-            children: [
-              { title: 'Team Crew', path: '/network/user-table/team-crew' },
-              { title: 'App Roster', path: '/network/user-table/app-roster' },
-              {
-                title: 'Market Authors',
-                path: '/network/user-table/market-authors',
-              },
-              { title: 'SaaS Users', path: '/network/user-table/saas-users' },
-              {
-                title: 'Store Clients',
-                path: '/network/user-table/store-clients',
-              },
-              { title: 'Visitors', path: '/network/user-table/visitors' },
-            ],
-          },
-        ],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: 'General Pages',
+    //     children: [
+    //       { title: 'Get Started', icon: Flag, path: '/network/get-started' },
+    //       { title: 'Colleagues', icon: Users, path: '#', disabled: true },
+    //       { title: 'Donators', icon: Heart, path: '#', disabled: true },
+    //       { title: 'Leads', icon: Zap, path: '#', disabled: true },
+    //     ],
+    //   },
+    //   {
+    //     title: 'Other pages',
+    //     children: [
+    //       {
+    //         title: 'User Cards',
+    //         children: [
+    //           { title: 'Mini Cards', path: '/network/user-cards/mini-cards' },
+    //           { title: 'Team Members', path: '/network/user-cards/team-crew' },
+    //           { title: 'Authors', path: '/network/user-cards/author' },
+    //           { title: 'NFT Users', path: '/network/user-cards/nft' },
+    //           { title: 'Social Users', path: '/network/user-cards/social' },
+    //           { title: 'Gamers', path: '#', disabled: true },
+    //         ],
+    //       },
+    //       {
+    //         title: 'User Base',
+    //         badge: 'Datatables',
+    //         children: [
+    //           { title: 'Team Crew', path: '/network/user-table/team-crew' },
+    //           { title: 'App Roster', path: '/network/user-table/app-roster' },
+    //           {
+    //             title: 'Market Authors',
+    //             path: '/network/user-table/market-authors',
+    //           },
+    //           { title: 'SaaS Users', path: '/network/user-table/saas-users' },
+    //           {
+    //             title: 'Store Clients',
+    //             path: '/network/user-table/store-clients',
+    //           },
+    //           { title: 'Visitors', path: '/network/user-table/visitors' },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
   },
   {
     title: 'Authentication',
-    children: [
-      {
-        title: 'General pages',
-        children: [
-          {
-            title: 'Classic Layout',
-            children: [
-              { title: 'Sign In', path: '/auth/classic/signin' },
-              { title: 'Sign Up', path: '/auth/classic/signup' },
-              { title: '2FA', path: '/auth/classic/2fa' },
-              { title: 'Check Email', path: '/auth/classic/check-email' },
-              {
-                title: 'Reset Password',
-                children: [
-                  {
-                    title: 'Enter Email',
-                    path: '/auth/classic/reset-password',
-                  },
-                  {
-                    title: 'Check Email',
-                    path: '/auth/classic/reset-password/check-email',
-                  },
-                  {
-                    title: 'Password is Changed',
-                    path: '/auth/classic/reset-password/changed',
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            title: 'Branded Layout',
-            children: [
-              { title: 'Sign In', path: '/auth/signin' },
-              { title: 'Sign Up', path: '/auth/signup' },
-              { title: '2FA', path: '/auth/2fa' },
-              { title: 'Check Email', path: '/auth/check-email' },
-              {
-                title: 'Reset Password',
-                children: [
-                  {
-                    title: 'Enter Email',
-                    path: '/auth/reset-password',
-                  },
-                  {
-                    title: 'Check Email',
-                    path: '/auth/reset-password/check-email',
-                  },
-                  {
-                    title: 'Password is Changed',
-                    path: '/auth/reset-password/changed',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        title: 'Other Pages',
-        children: [
-          {
-            title: 'Welcome Message',
-            icon: ThumbsUp,
-            path: '/auth/welcome-message',
-          },
-          {
-            title: 'Account Deactivated',
-            icon: ShieldOff,
-            path: '/auth/account-deactivated',
-          },
-          { title: 'Error 404', icon: HelpCircle, path: '/error/404' },
-          { title: 'Error 500', icon: AlertCircle, path: '/error/500' },
-        ],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: 'General pages',
+    //     children: [
+    //       {
+    //         title: 'Classic Layout',
+    //         children: [
+    //           { title: 'Sign In', path: '/auth/classic/signin' },
+    //           { title: 'Sign Up', path: '/auth/classic/signup' },
+    //           { title: '2FA', path: '/auth/classic/2fa' },
+    //           { title: 'Check Email', path: '/auth/classic/check-email' },
+    //           {
+    //             title: 'Reset Password',
+    //             children: [
+    //               {
+    //                 title: 'Enter Email',
+    //                 path: '/auth/classic/reset-password',
+    //               },
+    //               {
+    //                 title: 'Check Email',
+    //                 path: '/auth/classic/reset-password/check-email',
+    //               },
+    //               {
+    //                 title: 'Password is Changed',
+    //                 path: '/auth/classic/reset-password/changed',
+    //               },
+    //             ],
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         title: 'Branded Layout',
+    //         children: [
+    //           { title: 'Sign In', path: '/auth/signin' },
+    //           { title: 'Sign Up', path: '/auth/signup' },
+    //           { title: '2FA', path: '/auth/2fa' },
+    //           { title: 'Check Email', path: '/auth/check-email' },
+    //           {
+    //             title: 'Reset Password',
+    //             children: [
+    //               {
+    //                 title: 'Enter Email',
+    //                 path: '/auth/reset-password',
+    //               },
+    //               {
+    //                 title: 'Check Email',
+    //                 path: '/auth/reset-password/check-email',
+    //               },
+    //               {
+    //                 title: 'Password is Changed',
+    //                 path: '/auth/reset-password/changed',
+    //               },
+    //             ],
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     title: 'Other Pages',
+    //     children: [
+    //       {
+    //         title: 'Welcome Message',
+    //         icon: ThumbsUp,
+    //         path: '/auth/welcome-message',
+    //       },
+    //       {
+    //         title: 'Account Deactivated',
+    //         icon: ShieldOff,
+    //         path: '/auth/account-deactivated',
+    //       },
+    //       { title: 'Error 404', icon: HelpCircle, path: '/error/404' },
+    //       { title: 'Error 500', icon: AlertCircle, path: '/error/500' },
+    //     ],
+    //   },
+    // ],
   },
   {
     title: 'Store ',
-    children: [
-      {
-        title: 'Store - Client',
-        children: [
-          {
-            children: [
-              { title: 'Home', path: '/store-client/home' },
-              {
-                title: 'Search Results - Grid',
-                path: '/store-client/search-results-grid',
-              },
-              {
-                title: 'Search Results - List',
-                path: '/store-client/search-results-list',
-              },
-              {
-                title: 'Product Details',
-                path: '/store-client/product-details',
-              },
-              { title: 'Wishlist', path: '/store-client/wishlist' },
-              { title: 'My Orders', path: '/store-client/my-orders' },
-            ],
-          },
-          {
-            children: [
-              {
-                title: 'Checkout - Order Summary',
-                path: '/store-client/checkout/order-summary',
-              },
-              {
-                title: 'Checkout - Shipping Info',
-                path: '/store-client/checkout/shipping-info',
-              },
-              {
-                title: 'Checkout - Payment Method',
-                path: '/store-client/checkout/payment-method',
-              },
-              {
-                title: 'Checkout - Order Placed',
-                path: '/store-client/checkout/order-placed',
-              },
-              { title: 'Order Receipt', path: '/store-client/order-receipt' },
-            ],
-          },
-        ],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: 'Store - Client',
+    //     children: [
+    //       {
+    //         children: [
+    //           { title: 'Home', path: '/store-client/home' },
+    //           {
+    //             title: 'Search Results - Grid',
+    //             path: '/store-client/search-results-grid',
+    //           },
+    //           {
+    //             title: 'Search Results - List',
+    //             path: '/store-client/search-results-list',
+    //           },
+    //           {
+    //             title: 'Product Details',
+    //             path: '/store-client/product-details',
+    //           },
+    //           { title: 'Wishlist', path: '/store-client/wishlist' },
+    //           { title: 'My Orders', path: '/store-client/my-orders' },
+    //         ],
+    //       },
+    //       {
+    //         children: [
+    //           {
+    //             title: 'Checkout - Order Summary',
+    //             path: '/store-client/checkout/order-summary',
+    //           },
+    //           {
+    //             title: 'Checkout - Shipping Info',
+    //             path: '/store-client/checkout/shipping-info',
+    //           },
+    //           {
+    //             title: 'Checkout - Payment Method',
+    //             path: '/store-client/checkout/payment-method',
+    //           },
+    //           {
+    //             title: 'Checkout - Order Placed',
+    //             path: '/store-client/checkout/order-placed',
+    //           },
+    //           { title: 'Order Receipt', path: '/store-client/order-receipt' },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ],
   },
 ];
 
