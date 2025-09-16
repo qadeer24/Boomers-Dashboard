@@ -15,7 +15,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { data, Link } from 'react-router';
+import { data, Link, Navigate } from 'react-router';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { useLanguage } from '@/providers/i18n-provider';
 import { Badge } from '@/components/ui/badge';
@@ -34,11 +34,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { da } from '@faker-js/faker';
+import { useNavigate } from 'react-router';
+import { languages } from 'eslint-plugin-prettier';
 
 export function UserDropdownMenu({ trigger, profile, first_name, last_name, email }) {
   const { logout, user } = useAuth();
   const { currenLanguage, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
   // Use display data from currentUser
   const displayName =
@@ -64,6 +67,12 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
     localStorage.removeItem('user-data');
     return window.location.href = '/'; // Redirect to login page
   }
+
+  const Languages = [
+    { code: 'en', label: 'English', flag: toAbsoluteUrl('/media/flags/united-states.svg') },
+    { code: 'es', label: 'Spanish', flag: toAbsoluteUrl('/media/flags/spain.svg') },
+    { code: 'cn', label: 'Chinese', flag: toAbsoluteUrl('/media/flags/china.svg') },
+  ];
 
   return (
     <DropdownMenu>
@@ -106,22 +115,45 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
             to="/public-profile/profiles/default"
             className="flex items-center gap-2"
           >
-            <IdCard />
-            Public Profile
+            <UserCircle />
+            My Profile
           </Link>
+
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link
+            // to="https://devs.keenthemes.com"
+            className="flex items-center gap-2"
+          >
+            <SquareCode />
+            Boomers Academy
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <a
+            href="https://boomersinsuranceservices.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2"
+          >
+            <SquareCode />
+            Boomers Insurance
+          </a>
+
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            to="/account/home/user-profile"
             className="flex items-center gap-2"
           >
-            <UserCircle />
-            My Profile
+            <IdCard />
+            My Agency
           </Link>
         </DropdownMenuItem>
 
         {/* My Account Submenu */}
-        <DropdownMenuSub>
+        {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center gap-2">
             <Settings />
             My Account
@@ -182,17 +214,9 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
               </Link>
             </DropdownMenuItem>
           </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        </DropdownMenuSub> */}
 
-        <DropdownMenuItem asChild>
-          <Link
-            to="https://devs.keenthemes.com"
-            className="flex items-center gap-2"
-          >
-            <SquareCode />
-            Dev Forum
-          </Link>
-        </DropdownMenuItem>
+
 
         {/* Language Submenu with Radio Group */}
         <DropdownMenuSub>
@@ -223,7 +247,7 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
                 if (selectedLang) handleLanguage(selectedLang);
               }}
             >
-              {I18N_LANGUAGES.map((item) => (
+              {Languages.map((item) => (
                 <DropdownMenuRadioItem
                   key={item.code}
                   value={item.code}

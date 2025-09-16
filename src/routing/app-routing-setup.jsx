@@ -127,7 +127,7 @@ export function AppRoutingSetup() {
           <Route path="/admin/leads/edit" element={<LeadsOtherInfoPage />} />
           
           <Route
-            path="/public-profile/profiles/default/"
+            path="/public-profile/profiles/default"
             element={<AccountProfilePage />}
           />
 

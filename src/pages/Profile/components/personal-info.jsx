@@ -70,6 +70,15 @@ const PersonalInfo = () => {
   }
 
 
+  async function urlToFile(url, filename) {
+    console.log("Converting URL to File:", url);
+    const response = await fetch('https://boomersinsuranceservices.com/be/public/storage/uploads/user/profile/original/agent_21_1757951889.jpg');
+    if (!response.ok) throw new Error("Failed to fetch file from URL");
+    const blob = await response.blob();
+    const mimeType = blob.type || "image/png";
+    return new File([blob], filename, { type: mimeType });
+  }
+
   const onSave = (newFile) => {
     const base64String = newFile; // your string
     setFile(base64ToFile(base64String, "profile.png"));
@@ -125,6 +134,7 @@ const PersonalInfo = () => {
       [name]: value
     }));
     setUpdate(true);
+    // console.log("Data changed:", { ...data, [name]: value })
   };
 
   // console.log("Data to update:", data);
@@ -147,7 +157,17 @@ const PersonalInfo = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
-      formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
+      formData.append("description", data.description);
+      // if (file) {
+      //   // user uploaded a new file
+      //   formData.append("profile", base64ToFile(file, "profile.png"));
+      // } else if (data.profile && data.profile.startsWith("http")) {
+      //   // convert URL to File
+      //   const profileFile = await urlToFile(data.profile, "profile.png");
+      //   formData.append("profile", profileFile);
+      // }
+      // formData.append("profile", data.profile); // This should be a File object
+      // formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -286,7 +306,27 @@ const PersonalInfo = () => {
                 Gender
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} />
+                {/* <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} /> */}
+                <div className="py-4">
+                  <select
+                    className="border rounded-lg p-2 w-full"
+                    name="gender"
+                    value={data.gender || ""}
+                    onChange={handleChange}
+                    required
+                  >
+                    {/* Show only when gender is not selected */}
+                    {!data.gender && (
+                      <option value="">
+                        -- Select Gender --
+                      </option>
+                    )}
+
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+
+                </div>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -843,12 +883,18 @@ const Bio = () => {
       // Create FormData
       const formData = new FormData();
       formData.append("description", data.description);
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("gender", data.gender);
+      formData.append("npn", data.npn);
+      formData.append("dob", data.dob);
+      formData.append("phoneNumber", data.phoneNumber);
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
       });
 
-      updateAgent(formData, agentId)
+      updateAgent(formData, agentId, token)
         .then((response) => {
           console.log("Agent updated successfully:", response.data);
           setMessage("Agent updated successfully");
@@ -1045,7 +1091,7 @@ const LoginInfo = () => {
   return (
     <Card className="min-w-full">
       <CardHeader>
-        <CardTitle>Licensing Info</CardTitle>
+        <CardTitle>Login Info</CardTitle>
       </CardHeader>
       <CardContent className="kt-scrollable-x-auto pb-3 p-0">
         <Table className="align-middle text-sm text-muted-foreground">
@@ -1063,7 +1109,9 @@ const LoginInfo = () => {
                 Password
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                {data.password || 'N/A'}
+                <Button>
+                  Reset Password
+                </Button>
               </TableCell>
             </TableRow>
           </TableBody>

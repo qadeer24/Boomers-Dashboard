@@ -21,8 +21,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useSearchParams } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { getSignupSchema } from '../forms/signup-schema';
+import OtpVerificationModal from './OtpVerification';
 
 export function SignUpPage() {
   const navigate = useNavigate();
@@ -32,61 +34,143 @@ export function SignUpPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-
+  const [progress, setProgress] = useState(0);
   const form = useForm({
     resolver: zodResolver(getSignupSchema()),
     defaultValues: {
       email: '',
       password: '',
-      confirmPassword: '',
+      npn: '',
       firstName: '',
       lastName: '',
       terms: false,
     },
   });
 
-  async function onSubmit(values) {
+  const [data, setData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    npn: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+    // console.log("Data changed:", { ...data, [name]: value })
+  };
+  const handleSubmit = async () => {
+    console.log('Form values:', data);
     try {
       setIsProcessing(true);
       setError(null);
 
-      // Register the user with Supabase
-      await register(
-        values.email,
-        values.password,
-        values.confirmPassword,
-        values.firstName,
-        values.lastName,
-      );
 
-      // Set success message and metadata
-      setSuccessMessage(
-        'Registration successful! Please check your email to confirm your account.',
-      );
+      // if (!values.email.trim() || !values.password) {
+      //   setError('Email and password are required');
+      //   return;
+      // }
 
-      // After successful registration, you might want to update the user profile
-      // with additional metadata (firstName, lastName, etc.)
+      const apiUrl = import.meta.env.VITE_API_URL;
+      // data.token = localStorage.getItem("authToken", "17|4kFMlcEYgIVlT6JlwddrLDUkVfeKwcZF6CPldcDf5ef2ea7b");
 
-      // Optionally redirect to login page after a delay
-      setTimeout(() => {
-        navigate('/auth/signin');
-      }, 3000);
-    } catch (err) {
-      console.error('Registration error:', err);
+      const response = await fetch(`${apiUrl}/signup`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          firstName: data.firstName.trim(),
+          lastName: data.lastName.trim(),
+          email: data.email.trim().toLowerCase(),
+          npn: data.npn.trim(),
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Login failed. Please try again.');
+      }
+
+      console.log('Signup successful:', result);
+
+      localStorage.setItem('token', result.data.token);
+      localStorage.setItem('user-data', JSON.stringify(result.data.user));
+      // localStorage.setItem('user-info-prog', progress)
+
+      // ✅ Navigate after login
+      // const nextPath = '/recent-signups';
+      // navigate(nextPath);
+    }
+    catch (err) {
+      console.error('Unexpected sign-in error:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'An unexpected error occurred during registration. Please try again.',
+          : 'An unexpected error occurred. Please try again.'
       );
     } finally {
       setIsProcessing(false);
     }
+    // try {
+    //   setIsProcessing(true);
+    //   setError(null);
+
+    //   // Register the user with Supabase
+    //   await register(
+    //     values.email,
+    //     values.password,
+    //     values.confirmPassword,
+    //     values.firstName,
+    //     values.lastName,
+    //   );
+
+    //   // Set success message and metadata
+    //   setSuccessMessage(
+    //     'Registration successful! Please check your email to confirm your account.',
+    //   );
+
+    //   // After successful registration, you might want to update the user profile
+    //   // with additional metadata (firstName, lastName, etc.)
+
+    //   // Optionally redirect to login page after a delay
+    //   setTimeout(() => {
+    //     navigate('/auth/signin');
+    //   }, 3000);
+    // } catch (err) {
+    //   console.error('Registration error:', err);
+    //   setError(
+    //     err instanceof Error
+    //       ? err.message
+    //       : 'An unexpected error occurred during registration. Please try again.',
+    //   );
+    // } finally {
+    //   setIsProcessing(false);
+    // }
   }
 
+  const [otp, setOtp] = useState(null);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleVerify = (otpCode) => {
+    console.log("Entered OTP:", otpCode);
+    // Send otpCode to backend here
+    // setShowModal(false);
+  };
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        // onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
         className="block w-full space-y-5"
       >
         <div className="text-center space-y-1 pb-3">
@@ -125,12 +209,20 @@ export function SignUpPage() {
             <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your first name" {...field} />
+                <Input
+                  {...field} // <-- binds to react-hook-form
+                  placeholder="Enter your first name"
+                  onChange={(e) => {
+                    field.onChange(e); // update RHF
+                    handleChange(e);   // update your local state
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
 
         <FormField
           control={form.control}
@@ -139,12 +231,20 @@ export function SignUpPage() {
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your last name" {...field} />
+                <Input
+                  {...field} // <-- binds to react-hook-form
+                  placeholder="Enter your first name"
+                  onChange={(e) => {
+                    field.onChange(e); // update RHF
+                    handleChange(e);   // update your local state
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
 
         <FormField
           control={form.control}
@@ -154,9 +254,13 @@ export function SignUpPage() {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
+                  {...field} // <-- bind to RHF
                   placeholder="Your email address"
                   type="email"
-                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e); // update RHF
+                    handleChange(e);   // update local state
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -172,9 +276,13 @@ export function SignUpPage() {
               <FormLabel>Password</FormLabel>
               <div className="relative">
                 <Input
+                  {...field} // <-- bind to RHF
                   placeholder="Create a password"
                   type={passwordVisible ? 'text' : 'password'}
-                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e); // update RHF
+                    handleChange(e);   // update local state
+                  }}
                 />
 
                 <Button
@@ -197,6 +305,28 @@ export function SignUpPage() {
         />
 
         <FormField
+          control={form.control}
+          name="npn"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Npn</FormLabel>
+              <FormControl>
+                <Input
+                  {...field} // <-- bind to RHF
+                  placeholder="Enter your Npn number"
+                  onChange={(e) => {
+                    field.onChange(e); // update RHF
+                    handleChange(e);   // update local state
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+
+        {/* <FormField
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
@@ -228,7 +358,7 @@ export function SignUpPage() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -257,7 +387,7 @@ export function SignUpPage() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isProcessing}>
+        <Button type="button" onClick={() => {handleShow(); handleSubmit();}} className="w-full" disabled={isProcessing}>
           {isProcessing ? (
             <span className="flex items-center gap-2">
               <LoaderCircleIcon className="h-4 w-4 animate-spin" /> Creating
@@ -277,6 +407,13 @@ export function SignUpPage() {
             Sign In
           </Link>
         </div>
+
+        <OtpVerificationModal
+          show={show}
+          handleClose={handleClose}
+          handleVerify={handleVerify}
+          email={data.email}
+        />
       </form>
     </Form>
   );

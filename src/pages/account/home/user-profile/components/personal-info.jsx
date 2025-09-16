@@ -1055,7 +1055,7 @@ const LoginInfo = () => {
   return (
     <Card className="min-w-full">
       <CardHeader>
-        <CardTitle>Licensing Info</CardTitle>
+        <CardTitle>Login Info</CardTitle>
       </CardHeader>
       <CardContent className="kt-scrollable-x-auto pb-3 p-0">
         <Table className="align-middle text-sm text-muted-foreground">
