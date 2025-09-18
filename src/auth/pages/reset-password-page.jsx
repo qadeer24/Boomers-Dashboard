@@ -35,14 +35,28 @@ export function ResetPasswordPage() {
       setError(null);
 
       console.log('Submitting password reset for:', values.email);
+      const apiUrl = import.meta.env.VITE_API_URL;
 
       // Request password reset using Supabase directly
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        values.email,
-        {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+      // const { error } = await supabase.auth.resetPasswordForEmail(
+      //   values.email,
+      //   {
+      //     redirectTo: `${window.location.origin}/auth/reset-password`,
+      //   },
+      // );
+      // // data.token = localStorage.getItem("authToken", "17|4kFMlcEYgIVlT6JlwddrLDUkVfeKwcZF6CPldcDf5ef2ea7b");
+
+      const { error } = await fetch(`${apiUrl}/forgot-password`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          platform:"admin"
         },
-      );
+        body: JSON.stringify({
+          email: values.email,
+        }),
+      });
 
       if (error) {
         throw new Error(error.message);

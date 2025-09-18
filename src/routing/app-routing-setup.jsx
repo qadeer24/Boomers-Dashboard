@@ -38,7 +38,7 @@ import {
   AccountTeamsStarterPage,
   AccountUserProfilePage,
 } from '@/pages/account';
-import { 
+import {
   Events,
 } from '../pages/public-profile/profiles/events/Events';
 import {
@@ -104,12 +104,27 @@ import { MyContracts } from '@/pages/public-profile/Contracts/My-Contracts';
 import { Navigate, Route, Routes } from 'react-router';
 import { LeadsPage, LeadsOtherInfoPage } from '@/pages/Leads';
 import { NewCarrier } from '@/pages/Carriers/New-Carrier'
+import ResetPassword from '@/auth/pages/ResetPassUrlHandler';
+import CreateNewPass from '@/auth/pages/Changepass';
+
 export function AppRoutingSetup() {
   return (
     <Routes>
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
+          <Route
+            path="/reset-password"
+            element={
+              <ResetPassword />
+            }
+          />
+          <Route
+            path="/set-new-password"
+            element={
+              <CreateNewPass />
+            }
+          />
           <Route path="/events" element={<Events />} />
           <Route path="/agent/get-contracted/step-1" element={<Step1 />} />
           <Route path="/agent/get-contracted/step-2" element={<Step2 />} />
@@ -121,11 +136,11 @@ export function AppRoutingSetup() {
             path="/admin/agent/detail/:id"
             exact
             element={<ProfileDefaultPage />}
-          />        
+          />
           <Route path="/admin/carriers/new-carrier" element={<NewCarrier />} />
           <Route path="/admin/leads" element={<LeadsPage />} />
           <Route path="/admin/leads/edit" element={<LeadsOtherInfoPage />} />
-          
+
           <Route
             path="/public-profile/profiles/default"
             element={<AccountProfilePage />}
