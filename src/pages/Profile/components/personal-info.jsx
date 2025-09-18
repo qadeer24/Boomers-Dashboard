@@ -167,7 +167,7 @@ const PersonalInfo = () => {
       //   formData.append("profile", profileFile);
       // }
       // formData.append("profile", data.profile); // This should be a File object
-      // formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
+      formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -357,7 +357,10 @@ const LicensingInfo = () => {
 
 
   const [selectedState, setSelectedState] = useState({});
-  const [selectedOtherState, setSelectedOtherState] = useState({});
+  const [selectedOtherState, setSelectedOtherState] = useState([]);
+  const safeSelectedOtherState = Array.isArray(selectedOtherState)
+    ? selectedOtherState
+    : [];
   const [selectedUpline, setSelectedUpline] = useState("");
   const [selectedEOpolicy, setSelectedEOpolicy] = useState("");
   const [states, setStates] = useState([]);
@@ -597,6 +600,26 @@ const LicensingInfo = () => {
     if (create) await submitCreate();
     else await submitUpdate();
   };
+
+
+  const toggleState = (state) => {
+    setSelectedOtherState((prev) => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      if (safePrev.some((s) => s.id === state.id)) {
+        return safePrev.filter((s) => s.id !== state.id);
+      } else {
+        return [...safePrev, state];
+      }
+    });
+  };
+
+
+  const removeState = (id) => {
+    setSelectedOtherState((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
   // console.log("Profile:", data.profile);
   return (
     <form action="">
@@ -733,32 +756,79 @@ const LicensingInfo = () => {
               </TableRow>
               <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
-                  Other States I\'m Licensed In (if applicabe)
+                  Other States I'm Licensed In (if applicable)
                 </TableCell>
+
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <div className="p-4">
-                    <select
-                      className="border rounded-lg p-2 w-full"
-                      name="other_licensed_states_id"
-                      value={selectedOtherState ? selectedOtherState.id : ""}
-                      onChange={(e) => {
-                        setSelectedOtherState(e.target.value); // updates state
-                        handleChange(e); // call your custom handler
-                      }}
-                      required
-                    >
-                      <option value="">
-                        {selectedOtherState?.name || "-- Select State --"}
-                      </option>
-                      {states.map((states) => (
-                        <option key={states.id} value={states.id}>
-                          {states.name}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="w-full p-4">
+                    {/* Selected tags */}
+                    {safeSelectedOtherState.length > 0 && (
+                      <div className="flex flex-wrap gap-2 border rounded-lg p-2 min-h-[45px] cursor-pointer">
+                        {safeSelectedOtherState.map((state) => (
+                          <span
+                            key={state.id}
+                            className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center gap-1 text-sm"
+                          >
+                            {state.name}
+                            <button
+                              type="button"
+                              onClick={() => removeState(state.id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+
+                    {/* Dropdown */}
+                    <div className="relative mt-2">
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => {
+                          setQuery(e.target.value);
+                          setOpen(true);
+                        }}
+                        onFocus={() => setOpen(true)}
+                        placeholder="Select State"
+                        className="border rounded-lg p-2 w-full"
+                      />
+
+                      {open && (
+                        <div className="absolute z-10 bg-white border rounded-lg w-full max-h-40 overflow-y-auto">
+                          {states.filter((s) =>
+                            s.name.toLowerCase().includes(query.toLowerCase())
+                          ).length === 0 ? (
+                            <div className="p-2 text-gray-400">No results</div>
+                          ) : (
+                            states
+                              .filter((s) => s.name.toLowerCase().includes(query.toLowerCase()))
+                              .map((state) => (
+                                <div
+                                  key={state.id}
+                                  className="p-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    toggleState(state);
+                                    setQuery(""); // reset input
+                                    setOpen(false);
+                                  }}
+                                >
+                                  {state.name}
+                                </div>
+                              ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+
                   </div>
                 </TableCell>
+
               </TableRow>
+
               <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
                   Are you working with an immediate upline?
@@ -783,6 +853,15 @@ const LicensingInfo = () => {
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
+
+                    {(selectedUpline === "1" || data.working_with_upline === 1) && (
+                      <input
+                        type="text"
+                        placeholder="Enter Upline"
+                        className="border rounded-lg p-2 my-3 w-full"
+                      />
+                    )}
+
                   </div>
                 </TableCell>
               </TableRow>
@@ -810,6 +889,13 @@ const LicensingInfo = () => {
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
+                    {(selectedEOpolicy === "1" || data.active_eo_policy === 1)&& (
+                      <input
+                        type="text"
+                        placeholder="Enter E&O Policy Number"
+                        className="border rounded-lg p-2 my-3 w-full"
+                      />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
