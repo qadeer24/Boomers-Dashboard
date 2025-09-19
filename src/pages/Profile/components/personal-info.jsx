@@ -21,7 +21,8 @@ import { getCountytByStateId } from '@/utils/agentService';
 import { se } from 'date-fns/locale/se';
 import { sub } from 'date-fns';
 import { da } from '@faker-js/faker';
-import ProfilePhotoEditor from './ProfilePhotoEditor'
+import ProfilePhotoEditor from './ProfilePhotoEditor';
+import { useNavigate } from 'react-router-dom';
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -167,7 +168,9 @@ const PersonalInfo = () => {
       //   formData.append("profile", profileFile);
       // }
       // formData.append("profile", data.profile); // This should be a File object
-      formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
+      if (file) {
+        formData.append("profile", base64ToFile(file, "profile.png"));
+      }
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -448,13 +451,13 @@ const LicensingInfo = () => {
       const isValid = Boolean(
         data.social_security_number &&
         data.resident_license_state_id &&
-        data.other_licensed_states_id &&
+        safeSelectedOtherState &&
         selectedUpline >= 0 &&
         selectedEOpolicy >= 0
       );
       console.log("data.social_security_number", data.social_security_number);
       console.log("data.resident_license_state_id", data.resident_license_state_id);
-      console.log("data.other_licensed_states_id", data.other_licensed_states_id);
+      console.log("data.other_licensed_states_id", safeSelectedOtherState);
       console.log("selectedUpline", selectedUpline);
       console.log("selectedEOpolicy", selectedEOpolicy);
       setShowErrors(isValid);   // update state
@@ -553,7 +556,10 @@ const LicensingInfo = () => {
       console.log("data updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
-
+      // ✅ Refresh page after success
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000); // wait 1 second so user can see the message
       await handleAutoFetch();
     } catch (error) {
       console.error("Error creating license info:", error);
@@ -585,7 +591,10 @@ const LicensingInfo = () => {
       setUpdate(false);
       setIsOpen(false);
       setTimeout(() => setDataupdated(false), 3000);
-
+      // ✅ Refresh page after success
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // wait 1 second so user can see the message
       // refresh from server
       await handleAutoFetch();
     } catch (error) {
@@ -889,7 +898,7 @@ const LicensingInfo = () => {
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
-                    {(selectedEOpolicy === "1" || data.active_eo_policy === 1)&& (
+                    {(selectedEOpolicy === "1" || data.active_eo_policy === 1) && (
                       <input
                         type="text"
                         placeholder="Enter E&O Policy Number"
@@ -1145,12 +1154,14 @@ const CommunityBadges = ({ title }) => {
 };
 
 const LoginInfo = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: '',
     password: '',
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const id = Number(user.id); // ya parseInt(user.id, 10)
 
@@ -1174,8 +1185,68 @@ const LoginInfo = () => {
       .catch((err) => console.error("Error fetching users:", err));
 
   };
+
+  const handleSendResetPassRequest = async () => {
+    setLoading(true);
+    setMessage("");
+    setErrors({});
+
+
+    try {
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+
+      const response = await fetch(`${apiUrl}/forgot-password`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          platform: "admin"
+        },
+        body: JSON.stringify({
+          email: data.email
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to send reset email');
+      }
+
+      setMessage("Password reset email sent. Please check your inbox.");
+      setShowAlert(true);
+
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+      setErrors({ general: error.message || "Failed to send reset email" });
+    } finally {
+      setLoading(false);
+    }
+
+
+  };
   return (
+
     <Card className="min-w-full">
+      {showAlert ? (
+        <div className="max-w-full ">
+          <div className="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 shadow-md">
+            <svg
+              className="flex-shrink-0 inline w-5 h-5 mr-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4.75a1 1 0 1 1 2 0v4.5a1 1 0 0 1-2 0v-4.5ZM10 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
+            </svg>
+            <span className="font-medium">Check your email!</span>
+            <span className="ml-2">We’ve sent you instructions to reset your password.</span>
+          </div>
+        </div>
+      ) : null}
       <CardHeader>
         <CardTitle>Login Info</CardTitle>
       </CardHeader>
@@ -1195,7 +1266,7 @@ const LoginInfo = () => {
                 Password
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <Button>
+                <Button onClick={handleSendResetPassRequest} className="bg-blue-500 ps-3 text-white hover:bg-blue-600 cursor-pointer">
                   Reset Password
                 </Button>
               </TableCell>

@@ -104,8 +104,8 @@ import { MyContracts } from '@/pages/public-profile/Contracts/My-Contracts';
 import { Navigate, Route, Routes } from 'react-router';
 import { LeadsPage, LeadsOtherInfoPage } from '@/pages/Leads';
 import { NewCarrier } from '@/pages/Carriers/New-Carrier'
-import ResetPassword from '@/auth/pages/ResetPassUrlHandler';
-import CreateNewPass from '@/auth/pages/Changepass';
+// import ResetPassword from '@/pages/ResetPass/ResetPassUrlHandler.jsx';
+// import CreateNewPass from '@/auth/pages/Changepass';
 
 export function AppRoutingSetup() {
   return (
@@ -113,18 +113,18 @@ export function AppRoutingSetup() {
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
-          <Route
+          {/* <Route
             path="/reset-password"
             element={
               <ResetPassword />
             }
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/set-new-password"
             element={
               <CreateNewPass />
             }
-          />
+          /> */}
           <Route path="/events" element={<Events />} />
           <Route path="/agent/get-contracted/step-1" element={<Step1 />} />
           <Route path="/agent/get-contracted/step-2" element={<Step2 />} />
