@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ResetPassword = () => {
+const ResetPasswordUrlHandler = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,11 +15,11 @@ const ResetPassword = () => {
       localStorage.setItem("resetEmail", email);
 
       // Redirect to your reset password form
-      navigate("/set-new-password"); 
+      navigate("/auth/classic/change-password"); 
     }
   }, [navigate]);
 
   return <div>Processing your reset request...</div>;
 };
 
-export default ResetPassword;
+export default ResetPasswordUrlHandler;
