@@ -33,8 +33,8 @@ const handleChange = (e) => {
 };
 const user = JSON.parse(localStorage.getItem('user-data'));
 
-
 const PersonalInfo = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [update, setUpdate] = useState(false)
   const [dataupdated, setDataUpdated] = useState(false)
@@ -185,6 +185,7 @@ const PersonalInfo = () => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);
@@ -197,7 +198,7 @@ const PersonalInfo = () => {
     setDataUpdated(true);
     useEffect(() => { handleAutoFetch(); }, [])
 
-    setTimeout(() => setDataUpdated(false), 3000);
+
   };
 
   // console.log("Fetched agents data:", data);
@@ -460,6 +461,9 @@ const LicensingInfo = () => {
       console.log("data.other_licensed_states_id", safeSelectedOtherState);
       console.log("selectedUpline", selectedUpline);
       console.log("selectedEOpolicy", selectedEOpolicy);
+      // const ids = safeSelectedOtherState.map(item => item.id);
+      // console.log("Other State Id's:", ids); // [2, 1]
+
       setShowErrors(isValid);   // update state
       console.log("error isValid (calculated):", isValid); // always correct
     } else {
@@ -556,6 +560,7 @@ const LicensingInfo = () => {
       console.log("data updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
       // ✅ Refresh page after success
       // setTimeout(() => {
       //   window.location.reload();
@@ -592,9 +597,8 @@ const LicensingInfo = () => {
       setIsOpen(false);
       setTimeout(() => setDataupdated(false), 3000);
       // ✅ Refresh page after success
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000); // wait 1 second so user can see the message
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
+
       // refresh from server
       await handleAutoFetch();
     } catch (error) {
@@ -998,6 +1002,7 @@ const Bio = () => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);
@@ -1312,6 +1317,7 @@ const BankInfo = () => {
       if (!licenseArray || Object.keys(licenseArray).length === 0) {
         setCreate(true); // No data means we are in create mode
       }
+
     } catch (err) {
       console.error("Error fetching agent:", err);
       setErrors({ general: err?.message || "Failed to fetch license info" });
@@ -1409,6 +1415,7 @@ const BankInfo = () => {
       console.log("data updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
       await handleAutoFetch();
     } catch (error) {
@@ -1441,6 +1448,7 @@ const BankInfo = () => {
       setUpdate(false);
       setIsOpen(false);
       setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
       // refresh from server
       await handleAutoFetch();

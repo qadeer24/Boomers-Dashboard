@@ -183,7 +183,7 @@ export default function ProfilePhotoEditor({ onSave, initialImage }) {
         {/* Profile image */}
         <img
           ref={profileImgRef}
-          src={preview || "https://placehold.co/72x72/474747/e5e7eb?text=User"}
+          src={preview || "/media/avatars/default-profile.jpeg"}
           alt="Profile"
           className="w-full h-full border-2 border-green-500 rounded-full object-cover cursor-pointer shadow-sm"
           onClick={() => fileInputRef.current.click()}
