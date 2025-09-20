@@ -258,7 +258,7 @@ export function Header() {
                   /> */}
 
                   <UserDropdownMenu
-                    profile={data?.profile || '/media/avatars/300-2.png'}
+                    profile={data.profile}
                     first_name={data.firstName}
                     last_name={data.lastName}
                     email={data.email}
@@ -266,7 +266,7 @@ export function Header() {
                       <img
                         className="size-9 rounded-full border-2 border-green-500 shrink-0 cursor-pointer"
                         // src={toAbsoluteUrl('/media/avatars/300-2.png')}
-                        src={data.profile}
+                        src={data.profile || toAbsoluteUrl('/media/avatars/default-profile.jpeg')}
                         alt="User Avatar"
                       />
                     }
@@ -424,7 +424,7 @@ export function Header() {
                       <img
                         className="size-9 rounded-full border-2 border-green-500 shrink-0 cursor-pointer"
                         // src={toAbsoluteUrl('/media/avatars/300-2.png')}
-                        src={data.profile}
+                        src={data.profile || toAbsoluteUrl('/media/avatars/default-profile.jpeg')}
                         alt="User Avatar"
                       />
                     }

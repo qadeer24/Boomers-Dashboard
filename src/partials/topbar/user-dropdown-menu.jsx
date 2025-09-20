@@ -83,7 +83,7 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
           <div className="flex items-center gap-2">
             <img
               className="size-9 rounded-full border-2 border-green-500"
-              src={displayAvatar}
+              src={displayAvatar || toAbsoluteUrl('/media/avatars/default-profile.jpeg')}
               alt="User avatar"
             />
 
