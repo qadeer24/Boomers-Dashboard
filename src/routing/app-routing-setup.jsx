@@ -209,7 +209,7 @@ export function AppRoutingSetup() {
           <Route path="/public-profile/works" element={<ProfileWorksPage />} />
           <Route path="/public-profile/teams" element={<ProfileTeamsPage />} />
           <Route
-            path="/public-profile/network"
+            path="/agent/Uplines"
             element={<ProfileNetworkPage />}
           />
 

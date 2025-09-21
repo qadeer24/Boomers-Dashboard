@@ -376,6 +376,7 @@ const LicensingInfo = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const [ids, setIds] = useState({});
 
   const [isOpen, setIsOpen] = useState(false); // confirm modal
   const [create, setCreate] = useState(false); // create vs update mode
@@ -461,7 +462,6 @@ const LicensingInfo = () => {
       console.log("data.other_licensed_states_id", safeSelectedOtherState);
       console.log("selectedUpline", selectedUpline);
       console.log("selectedEOpolicy", selectedEOpolicy);
-      // const ids = safeSelectedOtherState.map(item => item.id);
       // console.log("Other State Id's:", ids); // [2, 1]
 
       setShowErrors(isValid);   // update state
@@ -537,6 +537,9 @@ const LicensingInfo = () => {
     //   alert("Please fill all fields before submitting.");
     //   return;
     // }
+
+    const OtherIds = safeSelectedOtherState.map(item => item.id);
+
     setLoading(true);
     setMessage("");
     setErrors({});
@@ -545,7 +548,7 @@ const LicensingInfo = () => {
         user_id: id,
         social_security_number: data.social_security_number,
         resident_license_state_id: selectedState,
-        other_licensed_states_id: selectedOtherState,
+        other_licensed_states_id: JSON.stringify(OtherIds),
         working_with_upline: selectedUpline,
         active_eo_policy: selectedEOpolicy,
       }; // Use the current state data
@@ -576,6 +579,8 @@ const LicensingInfo = () => {
   };
 
   const submitUpdate = async () => {
+    const OtherIds = safeSelectedOtherState.map(item => item.id);
+
     setLoading(true);
     setMessage("");
     setErrors({});
@@ -584,7 +589,7 @@ const LicensingInfo = () => {
       formData.append("user_id", id);
       formData.append("social_security_number", data.social_security_number);
       formData.append("resident_license_state_id", data.resident_license_state_id);
-      formData.append("other_licensed_states_id", data.other_licensed_states_id);
+      formData.append("other_licensed_states_id", JSON.stringify(OtherIds));
       formData.append("working_with_upline", selectedUpline);
       formData.append("active_eo_policy", selectedEOpolicy);
       formData.append("_method", "PUT"); // if your backend needs method spoofing

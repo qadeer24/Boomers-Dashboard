@@ -4,6 +4,7 @@ import {
   EntryCallout,
   Highlights,
   TeamMeeting,
+  CommunityBadges,
   Teams,
 } from './components';
 
@@ -17,7 +18,7 @@ export function Demo1LightSidebarContent() {
           </div>
         </div>
         <div className="lg:col-span-2">
-          <EntryCallout className="h-full" />
+          <CommunityBadges className="h-full" title={'Uplines'}/>
         </div>
       </div>
       <div className="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">

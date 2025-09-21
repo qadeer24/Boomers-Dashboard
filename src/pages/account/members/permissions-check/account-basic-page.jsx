@@ -18,7 +18,7 @@ export function AccountPermissionsCheckPage() {
 
   return (
     <Fragment>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       {settings?.layout === 'demo1' && (
         <Container>
           <Toolbar>

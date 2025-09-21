@@ -56,26 +56,27 @@ import {
 } from 'lucide-react';
 
 export const MENU_SIDEBAR = [
-  // {
-  //   title: 'Dashboards',
-  //   icon: LayoutGrid,
-  // },
   {
     title: 'Dashboards',
     icon: LayoutGrid,
-    children: [
-      // { title: 'Recent Signup', path: '/recent-signups' },
-      // // { title: 'Profiles', path: '/admin/agent/detail/:id' },
-      // // { title: 'Policies', path: '/network/get-started' },
-      // { title: 'Carriers', path: '/public-profile/projects/3-columns' },
-      // // { title: 'Individuals', path: '/network/get-started' },
-      // // { title: 'Agents', path: '/network/get-started' },
-      // { title: 'Leads', path: '/admin/leads' },
-      // { title: 'Events', path: '/events' },
-      // { title: 'More', path: '/network/get-started' },
-    ],
+    path: '/',
   },
-    {
+  // {
+  //   title: 'Dashboards',
+  //   icon: LayoutGrid,
+  //   children: [
+  //     // { title: 'Upliance', path: '/recent-signups' },
+  //     // // { title: 'Profiles', path: '/admin/agent/detail/:id' },
+  //     // // { title: 'Policies', path: '/network/get-started' },
+  //     // { title: 'Carriers', path: '/public-profile/projects/3-columns' },
+  //     // // { title: 'Individuals', path: '/network/get-started' },
+  //     // // { title: 'Agents', path: '/network/get-started' },
+  //     // { title: 'Leads', path: '/admin/leads' },
+  //     // { title: 'Events', path: '/events' },
+  //     // { title: 'More', path: '/network/get-started' },
+  //   ],
+  // },
+  {
     title: 'Agency',
     icon: LayoutGrid,
     children: [
@@ -100,7 +101,12 @@ export const MENU_SIDEBAR = [
     icon: Users,
     path: '/admin/leads',
   },
-    // {
+  {
+    title: 'Uplines',
+    icon: Users,
+    path: '/agent/Uplines',
+  },
+  // {
   //   title: 'Boomers Insurance',
   //   icon: LayoutGrid,
   //   children: [

@@ -179,7 +179,7 @@ export function NewCarrier() {
 
             </Container>
             <Container className="flex justify-between">
-                <PageNavbar />
+                {/* <PageNavbar /> */}
                 {/* {settings?.layout === 'demo1' && ( */}
                 <Toolbar>
                     <ToolbarActions>
