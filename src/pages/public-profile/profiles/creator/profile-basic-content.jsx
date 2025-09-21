@@ -35,7 +35,7 @@ export function ProfileCreatorContent() {
           <Statistics data={data} />
           <Users title="Members" items={items} />
           <Summary title="About" />
-          <CommunityBadges title="Community Badges" />
+          <CommunityBadges title="Uplines" />
           <Tags title="Skills" />
         </div>
       </div>

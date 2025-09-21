@@ -20,7 +20,7 @@ export function AuthWelcomeMessagePage() {
 
   return (
     <Fragment>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       <Container>
         <Toolbar>
           <ToolbarHeading>

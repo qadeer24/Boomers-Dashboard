@@ -1,12 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CardConnection, CardConnectionRow } from '@/partials/cards';
 import { LayoutGrid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
-const Network = () => {
+const Network = ({ setDropdown, setShowEdit }) => {
   const [activeView, setActiveView] = useState('cards');
+
+  const [submit, setSubmit] = useState(false);
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const toggleSelect = (index) => {
+    setSelectedProjects((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index) // remove if already selected
+        : [...prev, index] // add if not selected
+    );
+  };
+
+  useEffect(() => {
+    // console.log("Hello world")
+    if (selectedProjects.length > 0) {
+      setDropdown(true);
+    } else {
+      setDropdown(false);
+    }
+    if (selectedProjects.length === 1) {
+      setShowEdit(true);
+    }else{
+      setShowEdit(false);
+    }
+  }, [selectedProjects]);
 
   const items = [
     {
@@ -242,34 +266,54 @@ const Network = () => {
   ];
 
   const renderItem = (item, index) => {
+    const isSelected = selectedProjects.includes(index);
+
     return (
-      <CardConnection
-        name={item.name}
-        info={item.info}
-        avatar={item.avatar}
-        email={item.email}
-        team={item.team}
-        statistics={item.statistics}
-        connected={item.connected}
+      <div
         key={index}
-      />
+        onClick={() => toggleSelect(index)}
+        className={`cursor-pointer rounded-xl border p-2 transition ${isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200"
+          }`}
+      >
+        <CardConnection
+          name="Upliance Name"
+          info={item.info}
+          avatar={item.avatar}
+          email={item.email}
+          team={item.team}
+          statistics={item.statistics}
+          connected={item.connected}
+          key={index}
+        />
+      </div>
     );
   };
 
   const renderData = (data, index) => {
+    const isSelected = selectedProjects.includes(index);
+
     return (
-      <CardConnectionRow
-        name={data.name}
-        info={data.info}
-        avatar={data.avatar}
-        email={data.email}
-        team={data.team}
-        statistics={data.statistics}
-        connected={data.connected}
+      <div
         key={index}
-      />
+        onClick={() => toggleSelect(index)}
+        className={`cursor-pointer rounded-xl border p-2 transition ${isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200"
+          }`}
+      >
+        <CardConnectionRow
+          name={data.name}
+          info={data.info}
+          avatar={data.avatar}
+          email={data.email}
+          team={data.team}
+          statistics={data.statistics}
+          connected={data.connected}
+          key={index}
+        />
+      </div>
     );
   };
+
+
 
   return (
     <div className="flex flex-col items-stretch gap-5 lg:gap-7.5">

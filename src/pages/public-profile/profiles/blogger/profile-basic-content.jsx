@@ -14,7 +14,7 @@ export function ProfileBloggerContent() {
         <div className="grid gap-5 lg:gap-7.5">
           <Statistics data={data} />
           <Summary title="Profile" />
-          <CommunityBadges title="Community Badges" />
+          <CommunityBadges title="Uplines" />
           <Collaborate title="Collaborate" />
           <Tags title="Skills" />
         </div>

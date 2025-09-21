@@ -138,7 +138,7 @@ export function ProfileDialog({ open, onOpenChange }) {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 lg:gap-7.5">
               <div className="col-span-1">
                 <div className="grid gap-5 lg:gap-7.5">
-                  <CommunityBadges title="Community Badges" />
+                  <CommunityBadges title="Uplines" />
                   <About />
                   <WorkExperience />
                 </div>

@@ -32,7 +32,7 @@ export function AccountUserProfileContent() {
       </div>
       <div className="col-span-1">
         <div className="grid gap-5 lg:gap-7.5">
-          <CommunityBadges title="Community Badges" />
+          <CommunityBadges title="Upliance" />
           <LoginInfo/>
           <BankInfo/>
           {/* <StartNow />

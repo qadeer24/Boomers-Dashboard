@@ -20,7 +20,7 @@ export function AuthAccountDeactivatedPage() {
 
   return (
     <Fragment>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       <Container>
         <Toolbar>
           <ToolbarHeading>

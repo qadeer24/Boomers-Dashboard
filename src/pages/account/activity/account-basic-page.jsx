@@ -17,7 +17,7 @@ export function AccountActivityPage() {
 
   return (
     <>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       {settings.layout === 'demo1' && (
         <Container>
           <Toolbar>

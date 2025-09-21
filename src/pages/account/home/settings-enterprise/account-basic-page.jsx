@@ -18,7 +18,7 @@ export function AccountSettingsEnterprisePage() {
 
   return (
     <Fragment>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       {settings?.layout === 'demo1' && (
         <Container>
           <Toolbar>

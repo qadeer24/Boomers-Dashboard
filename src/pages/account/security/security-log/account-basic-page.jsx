@@ -17,7 +17,7 @@ export function AccountSecurityLogPage() {
 
   return (
     <Fragment>
-      <PageNavbar />
+      {/* <PageNavbar /> */}
       {settings?.layout === 'demo1' && (
         <Container>
           <Toolbar>
