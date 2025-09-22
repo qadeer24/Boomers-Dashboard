@@ -60,14 +60,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '92',
-          description: 'Purchases',
+          description: 'Connection',
         },
         {
-          total: '$69',
-          description: 'Avg. Price',
+          total: '69',
+          description: 'Policies',
         },
         {
-          total: '$6,240',
+          total: '6,240',
           description: 'Total spent',
         },
       ],
@@ -97,14 +97,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '123',
-          description: 'Purchases',
+          description: 'Connections',
         },
         {
-          total: '$30',
-          description: 'Avg. Price',
+          total: '30',
+          description: 'Policies',
         },
         {
-          total: '$3,713',
+          total: '3,713',
           description: 'Total spent',
         },
       ],
@@ -134,14 +134,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '30',
-          description: 'Purchases',
+          description: 'Connections',
         },
         {
-          total: '$150',
-          description: 'Avg. Price',
+          total: '150',
+          description: 'Policies',
         },
         {
-          total: '$4,500',
+          total: '4,500',
           description: 'Total spent',
         },
       ],
@@ -171,14 +171,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '87',
-          description: 'Purchases',
+          description: 'Connections',
         },
         {
-          total: '$22',
-          description: 'Avg. Price',
+          total: '22',
+          description: 'Policies',
         },
         {
-          total: '$1958',
+          total: '1958',
           description: 'Total spent',
         },
       ],
@@ -208,14 +208,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '45',
-          description: 'Purchases',
+          description: 'Connections',
         },
         {
-          total: '$300',
-          description: 'Avg. Price',
+          total: '300',
+          description: 'Policies',
         },
         {
-          total: '$13,500',
+          total: '13,500',
           description: 'Total spent',
         },
       ],
@@ -249,14 +249,14 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '63',
-          description: 'Purchases',
+          description: 'Connections',
         },
         {
-          total: '$65',
-          description: 'Avg. Price',
+          total: '65',
+          description: 'Policies',
         },
         {
-          total: '$4,095',
+          total: '4,095',
           description: 'Total spent',
         },
       ],
@@ -276,10 +276,10 @@ const Network = ({ setDropdown, setShowEdit }) => {
           }`}
       >
         <CardConnection
-          name="Upliance Name"
-          info={item.info}
+          name="Boomers Insurance "
+          info="boomersinsuranceservices.com"
           avatar={item.avatar}
-          email={item.email}
+          email="Info@gmail.com"
           team={item.team}
           statistics={item.statistics}
           connected={item.connected}
@@ -339,7 +339,7 @@ const Network = ({ setDropdown, setShowEdit }) => {
       </div>
       {activeView === 'cards' && (
         <div id="network_cards">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-7.5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-7.5">
             {items.map((item, index) => {
               return renderItem(item, index);
             })}

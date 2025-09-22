@@ -1,4 +1,4 @@
-import { BadgeCheck, CircleCheck, Mail, Users } from 'lucide-react';
+import { BadgeCheck, CircleCheck, Mail, Globe, Users } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -67,7 +67,7 @@ const CardConnection = ({
         </div>
         <div className="flex flex-wrap justify-center items-center gap-4 mb-7">
           <div className="flex items-center text-sm text-secondary-foreground">
-            <BadgeCheck size={16} className="me-1 text-muted-foreground" />
+            <Globe size={16} className="me-1 text-muted-foreground" />
             {info}
           </div>
           <div className="flex items-center text-sm">
