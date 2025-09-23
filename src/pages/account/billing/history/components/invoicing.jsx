@@ -6,7 +6,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Download, Settings2, MessageCircleMore, Table, } from 'lucide-react';
+import { Download, Settings2, MessageCircleMore, Table, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,9 +61,10 @@ import { useNavigate } from 'react-router';
 import React from 'react';
 import { getAgents } from '@/utils/agentService';
 import { getprofileStatus } from '@/utils/agentService';
-
+import { useRef } from 'react';
 import { formatDistanceToNow, format } from "date-fns";
 import { get } from 'react-hook-form';
+
 
 const Invoicing = () => {
 
@@ -74,7 +75,31 @@ const Invoicing = () => {
   const [form, setForm] = useState({});
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [dropdown, setDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(0);
+  const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+
+  useEffect(() => {
+    console.log("Selected rows:", selectedUser);
+    if (selectedUser > 0) {
+      setDropdown(true);
+    } else {
+      setDropdown(false);
+    }
+  }, [selectedUser]);
 
   useEffect(() => {
     handleAutoFetch();
@@ -199,6 +224,35 @@ const Invoicing = () => {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "id",
+        accessorFn: (row) => row.id,
+        header: () => <DataGridTableRowSelectAll />,
+        cell: ({ row }) => (
+          <div
+            onClick={(e) => {
+              e.stopPropagation(); // 🚫 stops row navigation
+              const isSelected = row.getIsSelected();
+
+              // wait until after the checkbox toggles
+              setTimeout(() => {
+                setSelectedUser((prev) => (isSelected ? prev - 1 : prev + 1));
+              }, 0);
+            }}
+          >
+            <DataGridTableRowSelect row={row} />
+          </div>
+
+        ),
+        enableSorting: false,
+        enableHiding: false,
+        enableResizing: false,
+        size: 48,
+        meta: {
+          cellClassName: "",
+        },
+      },
+
       {
         id: 'firstName',
         accessorFn: (row) => row.firstName,
@@ -411,6 +465,7 @@ const Invoicing = () => {
     }
   }, [rowSelection]);
 
+
   const table = useReactTable({
     columns,
     data: filteredData,
@@ -501,9 +556,57 @@ const Invoicing = () => {
       }}
     >
       <Card>
-        <CardHeader>
+        <CardHeader className="flex items-center justify-between">
+          {/* Left side: Title */}
           <CardTitle>Showing 10 of 49,053 users</CardTitle>
-          <Toolbar />
+
+          {/* Right side: Actions */}
+          <div className="flex items-center gap-4">
+            {dropdown ? (
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+                >
+                  Take Action
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+
+                {/* Dropdown Menu */}
+                {open && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <ul className="py-2 text-gray-700">
+                      <li>
+                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                          Deactivate
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+            ) : (
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500"
+                >
+                  Take Action
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+              </div>
+
+            )}
+            <Toolbar />
+          </div>
         </CardHeader>
         <CardTable>
           <ScrollArea>

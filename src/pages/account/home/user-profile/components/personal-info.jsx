@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import ProfilePhotoEditor from './ProfilePhotoEditor';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { HexagonBadge } from '@/partials/common/hexagon-badge';
@@ -15,7 +16,6 @@ import axios from 'axios';
 import { http } from '../../../../../utils/httpService';
 import { set } from 'date-fns/set';
 import { updateLicenseInfo } from '@/utils/agentService';
-import ProfilePhotoEditor from './ProfilePhotoEditor'
 import { createLicenseInfo } from '@/utils/agentService';
 import { updateBankInfo } from '@/utils/agentService';
 import { createBankInfo } from '@/utils/agentService';
@@ -23,6 +23,8 @@ import { getCountytByStateId } from '@/utils/agentService';
 import { se } from 'date-fns/locale/se';
 import { sub } from 'date-fns';
 import { da } from '@faker-js/faker';
+import { useNavigate } from 'react-router';
+// import { useParams } from 'react-router';
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -33,7 +35,9 @@ const handleChange = (e) => {
 };
 
 const PersonalInfo = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { id } = useParams();
   const [update, setUpdate] = useState(false)
   const [dataupdated, setDataUpdated] = useState(false)
   const [data, setData] = useState({
@@ -47,7 +51,6 @@ const PersonalInfo = () => {
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
   const [errors, setErrors] = useState({});
   const [profile, setProfile] = useState({});
   const [file, setFile] = useState(null);
@@ -68,6 +71,15 @@ const PersonalInfo = () => {
     return new File([u8arr], filename, { type: mime });
   }
 
+
+  async function urlToFile(url, filename) {
+    console.log("Converting URL to File:", url);
+    const response = await fetch('https://boomersinsuranceservices.com/be/public/storage/uploads/user/profile/original/agent_21_1757951889.jpg');
+    if (!response.ok) throw new Error("Failed to fetch file from URL");
+    const blob = await response.blob();
+    const mimeType = blob.type || "image/png";
+    return new File([blob], filename, { type: mimeType });
+  }
 
   const onSave = (newFile) => {
     const base64String = newFile; // your string
@@ -124,6 +136,7 @@ const PersonalInfo = () => {
       [name]: value
     }));
     setUpdate(true);
+    // console.log("Data changed:", { ...data, [name]: value })
   };
 
   // console.log("Data to update:", data);
@@ -137,7 +150,7 @@ const PersonalInfo = () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL; // or your base API URL
       const token = localStorage.getItem("token");
-      const agentId = data.id; // assuming you have agentId in data
+      const agentId = id; // assuming you have agentId in data
       // Create FormData
       const formData = new FormData();
       formData.append("firstName", data.firstName);
@@ -146,7 +159,19 @@ const PersonalInfo = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
-      formData.append("profile", base64ToFile(file, "profile.png")); // This should be a File object
+      formData.append("description", data.description);
+      // if (file) {
+      //   // user uploaded a new file
+      //   formData.append("profile", base64ToFile(file, "profile.png"));
+      // } else if (data.profile && data.profile.startsWith("http")) {
+      //   // convert URL to File
+      //   const profileFile = await urlToFile(data.profile, "profile.png");
+      //   formData.append("profile", profileFile);
+      // }
+      // formData.append("profile", data.profile); // This should be a File object
+      if (file) {
+        formData.append("profile", base64ToFile(file, "profile.png"));
+      }
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -161,6 +186,7 @@ const PersonalInfo = () => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);
@@ -173,7 +199,7 @@ const PersonalInfo = () => {
     setDataUpdated(true);
     useEffect(() => { handleAutoFetch(); }, [])
 
-    setTimeout(() => setDataUpdated(false), 3000);
+
   };
 
   // console.log("Fetched agents data:", data);
@@ -285,7 +311,27 @@ const PersonalInfo = () => {
                 Gender
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} />
+                {/* <input type="text" value={data.gender ?? 'N/A'} name='gender' onChange={handleChange} /> */}
+                <div className="py-4">
+                  <select
+                    className="border rounded-lg p-2 w-full"
+                    name="gender"
+                    value={data.gender || ""}
+                    onChange={handleChange}
+                    required
+                  >
+                    {/* Show only when gender is not selected */}
+                    {!data.gender && (
+                      <option value="">
+                        -- Select Gender --
+                      </option>
+                    )}
+
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+
+                </div>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -310,23 +356,27 @@ const PersonalInfo = () => {
     </Card>
   );
 };
-// const states = [{}];
+const states = [{}];
 
 const LicensingInfo = () => {
 
 
+  const { id } = useParams();
   const [selectedState, setSelectedState] = useState({});
-  const [selectedOtherState, setSelectedOtherState] = useState({});
+  const [selectedOtherState, setSelectedOtherState] = useState([]);
+  const safeSelectedOtherState = Array.isArray(selectedOtherState)
+    ? selectedOtherState
+    : [];
   const [selectedUpline, setSelectedUpline] = useState("");
   const [selectedEOpolicy, setSelectedEOpolicy] = useState("");
   const [states, setStates] = useState([]);
 
 
-  const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const [ids, setIds] = useState({});
 
   const [isOpen, setIsOpen] = useState(false); // confirm modal
   const [create, setCreate] = useState(false); // create vs update mode
@@ -403,15 +453,17 @@ const LicensingInfo = () => {
       const isValid = Boolean(
         data.social_security_number &&
         data.resident_license_state_id &&
-        data.other_licensed_states_id &&
+        safeSelectedOtherState &&
         selectedUpline >= 0 &&
         selectedEOpolicy >= 0
       );
       console.log("data.social_security_number", data.social_security_number);
       console.log("data.resident_license_state_id", data.resident_license_state_id);
-      console.log("data.other_licensed_states_id", data.other_licensed_states_id);
+      console.log("data.other_licensed_states_id", safeSelectedOtherState);
       console.log("selectedUpline", selectedUpline);
       console.log("selectedEOpolicy", selectedEOpolicy);
+      // console.log("Other State Id's:", ids); // [2, 1]
+
       setShowErrors(isValid);   // update state
       console.log("error isValid (calculated):", isValid); // always correct
     } else {
@@ -485,6 +537,9 @@ const LicensingInfo = () => {
     //   alert("Please fill all fields before submitting.");
     //   return;
     // }
+
+    const OtherIds = safeSelectedOtherState.map(item => item.id);
+
     setLoading(true);
     setMessage("");
     setErrors({});
@@ -493,7 +548,7 @@ const LicensingInfo = () => {
         user_id: id,
         social_security_number: data.social_security_number,
         resident_license_state_id: selectedState,
-        other_licensed_states_id: selectedOtherState,
+        other_licensed_states_id: JSON.stringify(OtherIds),
         working_with_upline: selectedUpline,
         active_eo_policy: selectedEOpolicy,
       }; // Use the current state data
@@ -508,7 +563,11 @@ const LicensingInfo = () => {
       console.log("data updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
-
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
+      // ✅ Refresh page after success
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000); // wait 1 second so user can see the message
       await handleAutoFetch();
     } catch (error) {
       console.error("Error creating license info:", error);
@@ -520,6 +579,8 @@ const LicensingInfo = () => {
   };
 
   const submitUpdate = async () => {
+    const OtherIds = safeSelectedOtherState.map(item => item.id);
+
     setLoading(true);
     setMessage("");
     setErrors({});
@@ -528,7 +589,7 @@ const LicensingInfo = () => {
       formData.append("user_id", id);
       formData.append("social_security_number", data.social_security_number);
       formData.append("resident_license_state_id", data.resident_license_state_id);
-      formData.append("other_licensed_states_id", data.other_licensed_states_id);
+      formData.append("other_licensed_states_id", JSON.stringify(OtherIds));
       formData.append("working_with_upline", selectedUpline);
       formData.append("active_eo_policy", selectedEOpolicy);
       formData.append("_method", "PUT"); // if your backend needs method spoofing
@@ -540,6 +601,8 @@ const LicensingInfo = () => {
       setUpdate(false);
       setIsOpen(false);
       setTimeout(() => setDataupdated(false), 3000);
+      // ✅ Refresh page after success
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
       // refresh from server
       await handleAutoFetch();
@@ -555,6 +618,51 @@ const LicensingInfo = () => {
     if (create) await submitCreate();
     else await submitUpdate();
   };
+
+
+
+  const toggleState = (item) => {
+    setSelectedOtherState((prevSelected) => {
+      const safePrev = Array.isArray(prevSelected) ? prevSelected : [];
+
+      if (safePrev.some((s) => s.id === item.id)) {
+        // already selected → move back to state
+        setStates((prevState) => [...prevState, item]);
+        return safePrev.filter((s) => s.id !== item.id);
+      } else {
+        // not selected → move to selected
+        setStates((prevState) => prevState.filter((s) => s.id !== item.id));
+        return [...safePrev, item];
+      }
+    });
+  };
+
+
+
+  const removeState = (id) => {
+    setSelectedOtherState((prev) => {
+      const removedItem = prev.find((s) => s.id === id);
+
+      if (removedItem) {
+        setStates((old) => {
+          // check if already exists in old states
+          const exists = old.some((s) => s.id === removedItem.id);
+          if (exists) return old; // don't add duplicate
+
+          const updated = [...old, removedItem];
+          return updated.sort((a, b) => a.name.localeCompare(b.name));
+        });
+      }
+
+      return prev.filter((s) => s.id !== id);
+    });
+  };
+
+
+
+
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
   // console.log("Profile:", data.profile);
   return (
     <form action="">
@@ -691,32 +799,79 @@ const LicensingInfo = () => {
               </TableRow>
               <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
-                  Other States I\'m Licensed In (if applicabe)
+                  Other States I'm Licensed In (if applicable)
                 </TableCell>
+
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <div className="p-4">
-                    <select
-                      className="border rounded-lg p-2 w-full"
-                      name="other_licensed_states_id"
-                      value={selectedOtherState ? selectedOtherState.id : ""}
-                      onChange={(e) => {
-                        setSelectedOtherState(e.target.value); // updates state
-                        handleChange(e); // call your custom handler
-                      }}
-                      required
-                    >
-                      <option value="">
-                        {selectedOtherState?.name || "-- Select State --"}
-                      </option>
-                      {states.map((states) => (
-                        <option key={states.id} value={states.id}>
-                          {states.name}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="w-full p-4">
+                    {/* Selected tags */}
+                    {safeSelectedOtherState.length > 0 && (
+                      <div className="flex flex-wrap gap-2 border rounded-lg p-2 min-h-[45px] cursor-pointer">
+                        {safeSelectedOtherState.map((state) => (
+                          <span
+                            key={state.id}
+                            className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center gap-1 text-sm"
+                          >
+                            {state.name}
+                            <button
+                              type="button"
+                              onClick={() => removeState(state.id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+
+                    {/* Dropdown */}
+                    <div className="relative mt-2">
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => {
+                          setQuery(e.target.value);
+                          setOpen(true);
+                        }}
+                        onFocus={() => setOpen(true)}
+                        placeholder="Select State"
+                        className="border rounded-lg p-2 w-full"
+                      />
+
+                      {open && (
+                        <div className="absolute z-10 bg-white border rounded-lg w-full max-h-40 overflow-y-auto">
+                          {states.filter((s) =>
+                            s.name.toLowerCase().includes(query.toLowerCase())
+                          ).length === 0 ? (
+                            <div className="p-2 text-gray-400">No results</div>
+                          ) : (
+                            states
+                              .filter((s) => s.name.toLowerCase().includes(query.toLowerCase()))
+                              .map((state) => (
+                                <div
+                                  key={state.id}
+                                  className="p-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    toggleState(state);
+                                    setQuery(""); // reset input
+                                    setOpen(false);
+                                  }}
+                                >
+                                  {state.name}
+                                </div>
+                              ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+
                   </div>
                 </TableCell>
+
               </TableRow>
+
               <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
                   Are you working with an immediate upline?
@@ -741,6 +896,15 @@ const LicensingInfo = () => {
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
+
+                    {(selectedUpline === "1" || data.working_with_upline === 1) && (
+                      <input
+                        type="text"
+                        placeholder="Enter Upline"
+                        className="border rounded-lg p-2 my-3 w-full"
+                      />
+                    )}
+
                   </div>
                 </TableCell>
               </TableRow>
@@ -768,6 +932,13 @@ const LicensingInfo = () => {
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
+                    {(selectedEOpolicy === "1" || data.active_eo_policy === 1) && (
+                      <input
+                        type="text"
+                        placeholder="Enter E&O Policy Number"
+                        className="border rounded-lg p-2 my-3 w-full"
+                      />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
@@ -780,22 +951,13 @@ const LicensingInfo = () => {
 };
 
 const Bio = () => {
+  const { id } = useParams();
   const [update, setUpdate] = useState(false);
   const [dataupdated, setDataUpdated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [data, setData] = useState({
-    firstName: '',
-    lastName: '',
-    birthday: '',
-    gender: '',
-    phoneNumber: '',
-    npn: '',
-    profile: '', // Use the actual File object
-    description: '',
-  });
+  const [data, setData] = useState({});
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
   const [errors, setErrors] = useState({});
 
   // const [file, setFile] = useState(null);
@@ -845,17 +1007,17 @@ const Bio = () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL; // or your base API URL
       const token = localStorage.getItem("token");
-      const agentId = data.id; // assuming you have agentId in data
+      const agentId = id; // assuming you have agentId in data
 
       // Create FormData
       const formData = new FormData();
       formData.append("description", data.description);
-      formData.append("dob", data.dob);
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       formData.append("gender", data.gender);
-      formData.append("phoneNumber", data.phoneNumber);
       formData.append("npn", data.npn);
+      formData.append("dob", data.dob);
+      formData.append("phoneNumber", data.phoneNumber);
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
         console.log(key, value);
@@ -870,6 +1032,7 @@ const Bio = () => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);
@@ -961,6 +1124,7 @@ const Bio = () => {
   );
 };
 
+
 const CommunityBadges = ({ title }) => {
   const items = [
     {
@@ -1025,13 +1189,17 @@ const CommunityBadges = ({ title }) => {
 };
 
 const LoginInfo = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: '',
     password: '',
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+  const [showAlert, setShowAlert] = useState(false);
+
+
   const [errors, setErrors] = useState({});
   useEffect(() => {
     // console.log("Hello world")
@@ -1052,8 +1220,68 @@ const LoginInfo = () => {
       .catch((err) => console.error("Error fetching users:", err));
 
   };
+
+  const handleSendResetPassRequest = async () => {
+    setLoading(true);
+    setMessage("");
+    setErrors({});
+
+
+    try {
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+
+      const response = await fetch(`${apiUrl}/forgot-password`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          platform: "admin"
+        },
+        body: JSON.stringify({
+          email: data.email
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to send reset email');
+      }
+
+      setMessage("Password reset email sent. Please check your inbox.");
+      setShowAlert(true);
+
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+      setErrors({ general: error.message || "Failed to send reset email" });
+    } finally {
+      setLoading(false);
+    }
+
+
+  };
   return (
+
     <Card className="min-w-full">
+      {showAlert ? (
+        <div className="max-w-full ">
+          <div className="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 shadow-md">
+            <svg
+              className="flex-shrink-0 inline w-5 h-5 mr-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4.75a1 1 0 1 1 2 0v4.5a1 1 0 0 1-2 0v-4.5ZM10 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
+            </svg>
+            <span className="font-medium">Check your email!</span>
+            <span className="ml-2">We’ve sent you instructions to reset your password.</span>
+          </div>
+        </div>
+      ) : null}
       <CardHeader>
         <CardTitle>Login Info</CardTitle>
       </CardHeader>
@@ -1073,7 +1301,9 @@ const LoginInfo = () => {
                 Password
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                {data.password || 'N/A'}
+                <Button onClick={handleSendResetPassRequest} className="bg-blue-500 ps-3 text-white hover:bg-blue-600 cursor-pointer">
+                  Reset Password
+                </Button>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -1084,7 +1314,6 @@ const LoginInfo = () => {
 };
 
 const BankInfo = () => {
-
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1117,6 +1346,7 @@ const BankInfo = () => {
       if (!licenseArray || Object.keys(licenseArray).length === 0) {
         setCreate(true); // No data means we are in create mode
       }
+
     } catch (err) {
       console.error("Error fetching agent:", err);
       setErrors({ general: err?.message || "Failed to fetch license info" });
@@ -1214,6 +1444,7 @@ const BankInfo = () => {
       console.log("data updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
       await handleAutoFetch();
     } catch (error) {
@@ -1246,6 +1477,7 @@ const BankInfo = () => {
       setUpdate(false);
       setIsOpen(false);
       setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
       // refresh from server
       await handleAutoFetch();
@@ -1394,16 +1626,36 @@ const BankInfo = () => {
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
                   <input type="text" value={data.account_type ?? 'N/A'} name='account_type' onChange={handleChange} />
+                  <div className="py-4">
+                    <select
+                      className="border rounded-lg p-2 w-full"
+                      name="account_type"
+                      value={data.account_type || ""}
+                      onChange={handleChange}
+                      required
+                    >
+                      {/* Show only when gender is not selected */}
+                      {!data.gender && (
+                        <option value="">
+                          -- Select Gender --
+                        </option>
+                      )}
+
+                      <option value="checking">Checking</option>
+                      <option value="savings">Savings</option>
+                    </select>
+
+                  </div>
                 </TableCell>
               </TableRow>
-              <TableRow>
+              {/* <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
                   Address:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
                   <input type="text" value={data.address ?? 'N/A'} name='address' onChange={handleChange} />
                 </TableCell>
-              </TableRow>
+              </TableRow> */}
             </TableBody>
           </Table>
         </CardContent>
