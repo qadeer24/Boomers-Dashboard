@@ -27,7 +27,7 @@ const Network = ({ setDropdown, setShowEdit }) => {
     }
     if (selectedProjects.length === 1) {
       setShowEdit(true);
-    }else{
+    } else {
       setShowEdit(false);
     }
   }, [selectedProjects]);
@@ -271,10 +271,16 @@ const Network = ({ setDropdown, setShowEdit }) => {
     return (
       <div
         key={index}
-        onClick={() => toggleSelect(index)}
-        className={`cursor-pointer rounded-xl border p-2 transition ${isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200"
-          }`}
-      >
+        className={`relative transition`}
+        >
+        {/* Checkbox Icon */}
+        <input
+          type="checkbox"
+          onClick={() => toggleSelect(index)}
+          checked={isSelected}
+          readOnly
+          className="absolute top-4 right-4 h-6 w-6 accent-blue-500 cursor-pointer"
+        />
         <CardConnection
           name="Boomers Insurance "
           info="boomersinsuranceservices.com"

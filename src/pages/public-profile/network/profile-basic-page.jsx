@@ -23,14 +23,14 @@ import { Link } from 'lucide-react';
 import ProfilePhotoEditor from './components/ProfilePhotoEditor';
 
 export function ProfileNetworkPage() {
-  const [dropdown, setDropdown] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [update, setUpdate] = useState(false);
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [info, setInfo] = useState("");
   const [email, setEmail] = useState("");
-
+  
+  const [dropdown, setDropdown] = useState(false);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -140,7 +140,21 @@ export function ProfileNetworkPage() {
                 )}
               </div>
 
-            ) : null}
+            ) : (
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500"
+                >
+                  Take Action
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+              </div>
+
+            )}
             <Button variant="outline" mode="icon" onClick={() => setIsOpen(true)}>
               {/* <Link to={'/account/home/settings-sidebar#basic_settings'}> */}
               <Plus />

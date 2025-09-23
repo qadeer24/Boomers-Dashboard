@@ -620,21 +620,46 @@ const LicensingInfo = () => {
   };
 
 
-  const toggleState = (state) => {
-    setSelectedOtherState((prev) => {
-      const safePrev = Array.isArray(prev) ? prev : [];
-      if (safePrev.some((s) => s.id === state.id)) {
-        return safePrev.filter((s) => s.id !== state.id);
+
+  const toggleState = (item) => {
+    setSelectedOtherState((prevSelected) => {
+      const safePrev = Array.isArray(prevSelected) ? prevSelected : [];
+
+      if (safePrev.some((s) => s.id === item.id)) {
+        // already selected → move back to state
+        setStates((prevState) => [...prevState, item]);
+        return safePrev.filter((s) => s.id !== item.id);
       } else {
-        return [...safePrev, state];
+        // not selected → move to selected
+        setStates((prevState) => prevState.filter((s) => s.id !== item.id));
+        return [...safePrev, item];
       }
     });
   };
 
 
+
   const removeState = (id) => {
-    setSelectedOtherState((prev) => prev.filter((s) => s.id !== id));
+    setSelectedOtherState((prev) => {
+      const removedItem = prev.find((s) => s.id === id);
+
+      if (removedItem) {
+        setStates((old) => {
+          // check if already exists in old states
+          const exists = old.some((s) => s.id === removedItem.id);
+          if (exists) return old; // don't add duplicate
+
+          const updated = [...old, removedItem];
+          return updated.sort((a, b) => a.name.localeCompare(b.name));
+        });
+      }
+
+      return prev.filter((s) => s.id !== id);
+    });
   };
+
+
+
 
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -1602,16 +1627,36 @@ const BankInfo = () => {
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
                   <input type="text" value={data.account_type ?? 'N/A'} name='account_type' onChange={handleChange} />
+                  <div className="py-4">
+                    <select
+                      className="border rounded-lg p-2 w-full"
+                      name="account_type"
+                      value={data.account_type || ""}
+                      onChange={handleChange}
+                      required
+                    >
+                      {/* Show only when gender is not selected */}
+                      {!data.gender && (
+                        <option value="">
+                          -- Select Gender --
+                        </option>
+                      )}
+
+                      <option value="checking">Checking</option>
+                      <option value="savings">Savings</option>
+                    </select>
+
+                  </div>
                 </TableCell>
               </TableRow>
-              <TableRow>
+              {/* <TableRow>
                 <TableCell className="py-3 text-secondary-foreground font-normal">
                   Address:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
                   <input type="text" value={data.address ?? 'N/A'} name='address' onChange={handleChange} />
                 </TableCell>
-              </TableRow>
+              </TableRow> */}
             </TableBody>
           </Table>
         </CardContent>
