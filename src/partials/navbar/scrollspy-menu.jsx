@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 
 const ScrollspyMenu = ({ items }) => {
   const buildAnchor = (item, index, indent = false) => {
+    console.log("item::", items);
     return (
       <div
         key={index}

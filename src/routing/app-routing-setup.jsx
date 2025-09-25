@@ -96,6 +96,7 @@ import {
   WishlistPage,
 } from '@/pages/store-client';
 import { AccountProfilePage } from '@/pages/Profile/account-page';
+import { UplineProfilePage } from '@/pages/UplineInfo';
 import { Step1 } from '@/pages/public-profile/Get-Contracted/Step1';
 import { Step2 } from '@/pages/public-profile/Get-Contracted/Step2';
 import { Step3 } from '@/pages/public-profile/Get-Contracted/Step3';
@@ -104,6 +105,7 @@ import { MyContracts } from '@/pages/public-profile/Contracts/My-Contracts';
 import { Navigate, Route, Routes } from 'react-router';
 import { LeadsPage, LeadsOtherInfoPage } from '@/pages/Leads';
 import { NewCarrier } from '@/pages/Carriers/New-Carrier'
+import { AssignUplinePage } from '@/pages/Upline-Assign';
 // import ResetPassword from '@/pages/ResetPass/ResetPassUrlHandler.jsx';
 // import CreateNewPass from '@/auth/pages/Changepass';
 
@@ -132,10 +134,16 @@ export function AppRoutingSetup() {
           <Route path="/agent/get-contracted/completed" element={<GetContractedCompleted />} />
           <Route path="/agent/my-contracts" element={<MyContracts />} />
           <Route path="/dark-sidebar" element={<Demo1DarkSidebarPage />} />
+          <Route path="//admin/assign/upline" element={<AssignUplinePage />} />
+           
           <Route
             path="/admin/agent/detail/:id"
             exact
             element={<ProfileDefaultPage />}
+          />
+          <Route
+            path="/agent/Uplines/details/:id"
+            element={<UplineProfilePage />}
           />
           <Route path="/admin/carriers/new-carrier" element={<NewCarrier />} />
           <Route path="/admin/leads" element={<LeadsPage />} />

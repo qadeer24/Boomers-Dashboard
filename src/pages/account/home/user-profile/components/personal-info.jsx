@@ -202,6 +202,18 @@ const PersonalInfo = () => {
 
   };
 
+  const handleCheck = (e) => {
+    const { name, value } = e.target;
+
+    if (value === 'N/A') {
+      setData((prev) => ({
+        ...prev,
+        [name]: ''   // dynamically clear whichever field was clicked
+      }));
+    }
+  };
+
+
   // console.log("Fetched agents data:", data);
   return (
     <Card className="min-w-full">
@@ -339,7 +351,7 @@ const PersonalInfo = () => {
                 Phone
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="tel" value={data.phoneNumber ?? 'N/A'} name='phoneNumber' onChange={handleChange} />
+                <input type="tel" value={data.phoneNumber ?? 'N/A'} name='phoneNumber' onClick={handleCheck} onChange={handleChange} />
               </TableCell>
             </TableRow>
             <TableRow>
@@ -658,6 +670,16 @@ const LicensingInfo = () => {
     });
   };
 
+  const handleCheck = (e) => {
+    const { name, value } = e.target;
+
+    if (value === 'N/A') {
+      setData((prev) => ({
+        ...prev,
+        [name]: ''   // dynamically clear whichever field was clicked
+      }));
+    }
+  };
 
 
 
@@ -765,7 +787,7 @@ const LicensingInfo = () => {
                   Social Security Number
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="number" required value={data.social_security_number ?? 'N/A'} name='social_security_number' onChange={handleChange} />
+                  <input type="number" required value={data.social_security_number ?? 'N/A'} name='social_security_number' onClick={handleCheck} onChange={handleChange} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -933,11 +955,32 @@ const LicensingInfo = () => {
                       <option value="0">No</option>
                     </select>
                     {(selectedEOpolicy === "1" || data.active_eo_policy === 1) && (
-                      <input
-                        type="text"
-                        placeholder="Enter E&O Policy Number"
-                        className="border rounded-lg p-2 my-3 w-full"
-                      />
+                      <div className="my-3 w-full">
+                        <label
+                          htmlFor="pdfUpload"
+                          className="border rounded-lg p-2 w-full block text-center cursor-pointer bg-gray-100 hover:bg-gray-200"
+                        >
+                          Upload PDF
+                        </label>
+                        <input
+                          id="pdfUpload"
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => console.log(e.target.files[0])} // handle file here
+                        />
+                        <div className="text-right pt-2">
+                          <Link
+                            to="https://www.calsurance.com/thebrokerage"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "red", textDecoration: "underline", fontSize: '12px' }}
+                          >
+                            Don’t have E&0? Signup Here
+                          </Link>
+                        </div>
+                      </div>
+
                     )}
                   </div>
                 </TableCell>
@@ -1045,6 +1088,16 @@ const Bio = () => {
     setDataUpdated(true);
     useEffect(() => { handleAutoFetch(); }, [])
   };
+  const handleCheck = (e) => {
+    const { name, value } = e.target;
+
+    if (value === 'N/A') {
+      setData((prev) => ({
+        ...prev,
+        [name]: ''   // dynamically clear whichever field was clicked
+      }));
+    }
+  };
 
   const WORD_LIMIT = 150;
   return (
@@ -1091,6 +1144,7 @@ const Bio = () => {
                 <textarea
                   value={data.description ?? "N/A"}
                   name="description"
+                  onClick={handleCheck}
                   onChange={(e) => {
                     const words = e.target.value.trim().split(/\s+/);
                     if (words.length <= WORD_LIMIT) {
@@ -1489,6 +1543,18 @@ const BankInfo = () => {
     }
   };
 
+  const handleCheck = (e) => {
+    const { name, value } = e.target;
+
+    if (value === 'N/A') {
+      setData((prev) => ({
+        ...prev,
+        [name]: ''   // dynamically clear whichever field was clicked
+      }));
+    }
+  };
+
+
   const onConfirmUpdate = async () => {
     if (create) await submitCreate();
     else await submitUpdate();
@@ -1593,7 +1659,7 @@ const BankInfo = () => {
                   Account Holder:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.account_holder ?? 'N/A'} name='account_holder' onChange={handleChange} />
+                  <input type="text" value={data.account_holder ?? 'N/A'} name='account_holder' onClick={handleCheck} onChange={handleChange} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -1601,7 +1667,7 @@ const BankInfo = () => {
                   Bank Name:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.bank_name ?? 'N/A'} name='bank_name' onChange={handleChange} />
+                  <input type="text" value={data.bank_name ?? 'N/A'} name='bank_name' onClick={handleCheck} onChange={handleChange} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -1609,7 +1675,7 @@ const BankInfo = () => {
                   Account Number:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.account_number ?? 'N/A'} name='account_number' onChange={handleChange} />
+                  <input type="text" value={data.account_number ?? 'N/A'} name='account_number' onClick={handleCheck} onChange={handleChange} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -1617,7 +1683,7 @@ const BankInfo = () => {
                   Routing Number:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.routing_number ?? 'N/A'} name='routing_number' onChange={handleChange} />
+                  <input type="text" value={data.routing_number ?? 'N/A'} name='routing_number' onClick={handleCheck} onChange={handleChange} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -1625,7 +1691,7 @@ const BankInfo = () => {
                   Account Type:
                 </TableCell>
                 <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.account_type ?? 'N/A'} name='account_type' onChange={handleChange} />
+                  {/* <input type="text" value={data.account_type ?? 'N/A'} name='account_type' onChange={handleChange} /> */}
                   <div className="py-4">
                     <select
                       className="border rounded-lg p-2 w-full"

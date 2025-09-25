@@ -48,23 +48,7 @@ export function LeadsPage() {
 
   return (
     <Fragment>
-      <Container>
-        <ToolbarHeading>
-          <div className=" justify-between">
-            <ToolbarPageTitle />
-            <p>Lorem ipsum dolor </p>
-            <ToolbarActions>
-            </ToolbarActions>
-          </div>
-          <ToolbarDescription>
-            
-          </ToolbarDescription>
-
-        </ToolbarHeading>
-
-
-      </Container>
-      <Container className="flex justify-between">
+      <Container className="flex justify-end py-3">
         {/* <PageNavbar /> */}
         {/* {settings?.layout === 'demo1' && ( */}
         <Toolbar>

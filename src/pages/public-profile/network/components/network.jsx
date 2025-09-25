@@ -4,10 +4,12 @@ import { LayoutGrid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useNavigate } from 'react-router-dom';
+
 
 const Network = ({ setDropdown, setShowEdit }) => {
   const [activeView, setActiveView] = useState('cards');
-
+  const navigate = useNavigate();
   const [submit, setSubmit] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState([]);
   const toggleSelect = (index) => {
@@ -60,15 +62,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '92',
-          description: 'Connection',
+          description: 'Agents',
         },
         {
           total: '69',
           description: 'Policies',
         },
         {
-          total: '6,240',
-          description: 'Total spent',
+          total: '$6,240',
+          description: 'Commissions',
         },
       ],
 
@@ -97,15 +99,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '123',
-          description: 'Connections',
+          description: 'Agents',
         },
         {
           total: '30',
           description: 'Policies',
         },
         {
-          total: '3,713',
-          description: 'Total spent',
+          total: '$3,713',
+          description: 'Commissions',
         },
       ],
 
@@ -134,15 +136,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '30',
-          description: 'Connections',
+          description: 'Agents',
         },
         {
           total: '150',
           description: 'Policies',
         },
         {
-          total: '4,500',
-          description: 'Total spent',
+          total: '$4,500',
+          description: 'Commissions',
         },
       ],
 
@@ -171,15 +173,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '87',
-          description: 'Connections',
+          description: 'Agents',
         },
         {
           total: '22',
           description: 'Policies',
         },
         {
-          total: '1958',
-          description: 'Total spent',
+          total: '$1958',
+          description: 'Commissions',
         },
       ],
 
@@ -208,15 +210,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '45',
-          description: 'Connections',
+          description: 'Agents',
         },
         {
           total: '300',
           description: 'Policies',
         },
         {
-          total: '13,500',
-          description: 'Total spent',
+          total: '$13,500',
+          description: 'Commissions',
         },
       ],
 
@@ -249,15 +251,15 @@ const Network = ({ setDropdown, setShowEdit }) => {
       statistics: [
         {
           total: '63',
-          description: 'Connections',
+          description: 'Agents',
         },
         {
           total: '65',
           description: 'Policies',
         },
         {
-          total: '4,095',
-          description: 'Total spent',
+          total: '$4,095',
+          description: 'Commissions',
         },
       ],
 
@@ -272,25 +274,28 @@ const Network = ({ setDropdown, setShowEdit }) => {
       <div
         key={index}
         className={`relative transition`}
-        >
+      >
         {/* Checkbox Icon */}
-        <input
-          type="checkbox"
-          onClick={() => toggleSelect(index)}
-          checked={isSelected}
-          readOnly
-          className="absolute top-4 right-4 h-6 w-6 accent-blue-500 cursor-pointer"
-        />
-        <CardConnection
-          name="Boomers Insurance "
-          info="boomersinsuranceservices.com"
-          avatar={item.avatar}
-          email="Info@gmail.com"
-          team={item.team}
-          statistics={item.statistics}
-          connected={item.connected}
-          key={index}
-        />
+        <div onClick={(e) => { e.stopPropagation(); navigate(`/agent/Uplines/details/${index}`); }}>
+
+          <input
+            type="checkbox"
+            onClick={(e) => { e.stopPropagation(); toggleSelect(index)}}
+            checked={isSelected}
+            readOnly
+            className="absolute top-4 right-4 h-6 w-6 accent-blue-500 cursor-pointer"
+          />
+          <CardConnection
+            name="Boomers Insurance "
+            info="boomersinsuranceservices.com"
+            avatar={item.avatar}
+            email="Info@gmail.com"
+            team={item.team}
+            statistics={item.statistics}
+            connected={item.connected}
+            key={index}
+          />
+        </div>
       </div>
     );
   };

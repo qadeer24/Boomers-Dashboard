@@ -116,6 +116,11 @@ export const MENU_SIDEBAR = [
     icon: Users,
     path: '/admin/leads',
   },
+  {
+    title: 'Assign Uplines',
+    icon: Users,
+    path: '/admin/assign/upline',
+  },
   // {
   //   title: 'Uplines',
   //   icon: Users,
