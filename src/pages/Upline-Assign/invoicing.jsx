@@ -6,7 +6,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Download, Settings2, MessageCircleMore, Table, } from 'lucide-react';
+import { Download, Settings2, MessageCircleMore, Table, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,13 +20,6 @@ import {
   CardToolbar,
 } from '@/components/ui/card';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Filter,
   Info,
   Search,
@@ -39,7 +32,7 @@ import { DataGrid, useDataGrid } from '@/components/ui/data-grid';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { DataGridColumnVisibility } from '@/components/ui/data-grid-column-visibility';
 import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DropdownMenu10 } from '@/partials/dropdown-menu/dropdown-menu-10';
+import { DropdownMenu2 } from '@/partials/dropdown-menu/dropdown-menu-2';
 import { EllipsisVertical } from 'lucide-react';
 import {
   DataGridTable,
@@ -48,6 +41,13 @@ import {
 } from '@/components/ui/data-grid-table';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { ChatSheet } from '@/partials/topbar/chat-sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   // Table,
   TableBody,
@@ -59,10 +59,12 @@ import {
 // import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router';
 import React from 'react';
-import { getLeads } from '@/utils/agentService';
 import { getAgents } from '@/utils/agentService';
-import { formatDistanceToNow } from 'date-fns';
+import { getprofileStatus } from '@/utils/agentService';
 import { useRef } from 'react';
+import { formatDistanceToNow, format } from "date-fns";
+import { get } from 'react-hook-form';
+
 
 const Invoicing = () => {
 
@@ -73,34 +75,35 @@ const Invoicing = () => {
   const [form, setForm] = useState({});
   const [selectedCounty, setSelectedCounty] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [dropdown, setDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(0);
+  const dropdownRef = useRef(null);
 
-  const [selectedAgent, setSelectedAgent] = useState([]);
-  const [agents, setAgents] = useState([]);
-
-
-
-  const formatBoolean = (value) => {
-    if (value === 1) return "Yes";
-    if (value === 0) return "No";
-    return "N/A"; // fallback if null/undefined or other value
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setUpdate(true);
-    setMessage("");
-  };
-
+  // Close dropdown when clicking outside
   useEffect(() => {
-    handleFetchAgents();
-    handleAutoFetch();
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
 
+  useEffect(() => {
+    console.log("Selected rows:", selectedUser);
+    if (selectedUser > 0) {
+      setDropdown(true);
+    } else {
+      setDropdown(false);
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    handleAutoFetch();
+  }, []);
 
   // const handleAutoFetch = async () => {
   //   console.log("Fetching agents data...");
@@ -162,60 +165,43 @@ const Invoicing = () => {
   //   }
   // };
   const handleAutoFetch = async () => {
-    setLoading(true);
-    setMessage("");
-    setErrors({});
-
-
-    getLeads()
-      .then((data) => {
-        const agentsArray = data.data;
-        const formattedData = agentsArray.map((agent, index) => ({
-          id: agent.id, // Unique ID
-          name: agent.name || 'N/A',
-          phone: agent.phone || 'N/A',
-          npn: agent.npm || 'N/A',
-          activity: agent.updatedAt ? formatDistanceToNow(new Date(agent.updatedAt), { addSuffix: true }) : 'N/A',
-          doctors: agent.doctors || 'N/A',
-
-          chronicHealth: formatBoolean(agent.chronicHealth),
-          dentalVisionHearing: formatBoolean(agent.dentalVisionHearing),
-          do_takePrescriptions: formatBoolean(agent.do_takePrescriptions),
-          gymTransport: formatBoolean(agent.gymTransport),
-          hasMedicare: formatBoolean(agent.hasMedicare),
-          lowerPremium: formatBoolean(agent.lowerPremium),
-          medicareParts: formatBoolean(agent.medicareParts),
-          otherCoverage: formatBoolean(agent.otherCoverage),
-        }));
-        console.log(";;Leads:::", formattedData);
-        setData(formattedData);
-        // console.log("Agents data fetched successfully:", data);
-      })
-      .catch((err) => console.error("Error fetching users:", err));
-  };
-
-  const handleFetchAgents = async () => {
     console.log("Fetching agents data...");
     setLoading(true);
     setMessage("");
     setErrors({});
+
+    // getprofileStatus()
+    //   .then((status) => {
+    //     console.log("Profile status data fetched successfully:", status);
+    //   });
+
     getAgents()
-      .then((agentsData) => {
-        // const agentsArray = agentsData.data;
+      .then((data) => {
+        const agentsArray = data.data.agents;
+        console.log("agentsArray", agentsArray);
 
-        console.log(";;agents:::", agentsData.data.agents);
-        const newAgentsData = agentsData.data.agents;
+        const formattedData = agentsArray.map((agent, index) => ({
+          id: agent.id, // Unique ID
+          firstName: agent.firstName || 'N/A',
+          lastName: agent.lastName || 'N/A',
+          email: agent.email || 'N/A',
+          npn: agent.npn || 'N/A',
+          time: agent.createdAt ? format(agent.createdAt, "h:mma").toLowerCase() : "N/A",
+          relativeTime: agent.createdAt ? formatDistanceToNow(agent.createdAt, { addSuffix: true }) : "N/A",
 
-        // Use the state setter function to update the array
-        setAgents(newAgentsData);
-          console.log("Selecte000---------:", agents);
+          status: agent.status,
+          isEmailVerified: agent.isEmailVerified,
+        }));
 
+        setData(formattedData);
+        const id = formattedData.id;
+        console.log("Agents data fetched successfully:", formattedData);
       })
       .catch((err) => console.error("Error fetching users:", err));
 
-  }
 
-  // console.log("Agents data ", agent);
+  };
+
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -223,11 +209,7 @@ const Invoicing = () => {
   });
   const [rowSelection] = useState({});
   const [sorting, setSorting] = useState([{ id: 'date', desc: true }]);
-
-  const [agentSearchQuery, setAgentSearchQuery] = useState("");
-  const [agentDropdownOpen, setAgentDropdownOpen] = useState(false);
-  const agentDropdownRef = useRef(null);
-
+  console.log("data", data);
   const ColumnInputFilter = ({ column }) => {
     return (
       <Input
@@ -243,39 +225,64 @@ const Invoicing = () => {
   const columns = useMemo(
     () => [
       {
-        id: 'name',
-        accessorFn: (row) => row.name,
+        accessorKey: "id",
+        accessorFn: (row) => row.id,
+        header: () => <DataGridTableRowSelectAll />,
+        cell: ({ row }) => (
+          <div
+            onClick={(e) => {
+              e.stopPropagation(); // 🚫 stops row navigation
+              const isSelected = row.getIsSelected();
+
+              // wait until after the checkbox toggles
+              setTimeout(() => {
+                setSelectedUser((prev) => (isSelected ? prev - 1 : prev + 1));
+              }, 0);
+            }}
+          >
+            <DataGridTableRowSelect row={row} />
+          </div>
+
+        ),
+        enableSorting: false,
+        enableHiding: false,
+        enableResizing: false,
+        size: 48,
+        meta: {
+          cellClassName: "",
+        },
+      },
+
+      {
+        id: 'firstName',
+        accessorFn: (row) => row.firstName,
         header: ({ column }) => (
           <DataGridColumnHeader
-            title="Name"
+            title="Logo"
             filter={<ColumnInputFilter column={column} />}
             column={column}
           />
         ),
 
         cell: (info) => {
-          return info.row.original.name;
+          return info.row.original.firstName;
         },
         enableSorting: true,
-        size: 80,
+        size: 120,
         meta: {
           cellClassName: 'px-7',
         },
       },
 
       {
-        id: 'name',
-        accessorFn: (row) => row.name,
+        id: 'lastName',
+        accessorFn: (row) => row.lastName,
         header: ({ column }) => (
-          <DataGridColumnHeader
-            title="Email"
-            filter={<ColumnInputFilter column={column} />}
-            column={column}
-          />
+          <DataGridColumnHeader title="Last Name" column={column} />
         ),
 
         cell: (info) => {
-          return info.row.original.name;
+          return info.row.original.lastName;
         },
         enableSorting: true,
         size: 120,
@@ -284,414 +291,65 @@ const Invoicing = () => {
         },
       },
       {
-        id: 'phone',
-        accessorFn: (row) => row.phone,
+        id: 'email',
+        accessorFn: (row) => row.email,
         header: ({ column }) => (
-          <DataGridColumnHeader title="Phone" column={column} />
+          <DataGridColumnHeader title="Email" column={column} />
         ),
 
-        cell: (info) => {
-          return info.row.original.phone;
-        },
+        cell: (info) => (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>{info.row.original.email}</span>
+            {info.row.original.isEmailVerified ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="16"
+                viewBox="0 0 15 16"
+                fill="none"
+                className="text-primary"
+              >
+                <path
+                  d="M14.5425 6.89749L13.5 5.83999C13.4273 5.76877 13.3699 5.6835 13.3312 5.58937C13.2925 5.49525 13.2734 5.39424 13.275 5.29249V3.79249C13.274 3.58699 13.2324 3.38371 13.1527 3.19432C13.0729 3.00494 12.9565 2.83318 12.8101 2.68892C12.6638 2.54466 12.4904 2.43073 12.2998 2.35369C12.1093 2.27665 11.9055 2.23801 11.7 2.23999H10.2C10.0982 2.24159 9.99722 2.22247 9.9031 2.18378C9.80898 2.1451 9.72371 2.08767 9.65249 2.01499L8.60249 0.957487C8.30998 0.665289 7.91344 0.50116 7.49999 0.50116C7.08654 0.50116 6.68999 0.665289 6.39749 0.957487L5.33999 1.99999C5.26876 2.07267 5.1835 2.1301 5.08937 2.16879C4.99525 2.20747 4.89424 2.22659 4.79249 2.22499H3.29249C3.08699 2.22597 2.88371 2.26754 2.69432 2.34731C2.50494 2.42709 2.33318 2.54349 2.18892 2.68985C2.04466 2.8362 1.93073 3.00961 1.85369 3.20013C1.77665 3.39064 1.73801 3.5945 1.73999 3.79999V5.29999C1.74159 5.40174 1.72247 5.50275 1.68378 5.59687C1.6451 5.691 1.58767 5.77627 1.51499 5.84749L0.457487 6.89749C0.165289 7.19 0.00115967 7.58654 0.00115967 7.99999C0.00115967 8.41344 0.165289 8.80998 0.457487 9.10249L1.49999 10.16C1.57267 10.2312 1.6301 10.3165 1.66878 10.4106C1.70747 10.5047 1.72659 10.6057 1.72499 10.7075V12.2075C1.72597 12.413 1.76754 12.6163 1.84731 12.8056C1.92709 12.995 2.04349 13.1668 2.18985 13.3111C2.3362 13.4553 2.50961 13.5692 2.70013 13.6463C2.89064 13.7233 3.0945 13.762 3.29999 13.76H4.79999C4.90174 13.7584 5.00275 13.7775 5.09687 13.8162C5.191 13.8549 5.27627 13.9123 5.34749 13.985L6.40499 15.0425C6.69749 15.3347 7.09404 15.4988 7.50749 15.4988C7.92094 15.4988 8.31748 15.3347 8.60999 15.0425L9.65999 14C9.73121 13.9273 9.81647 13.8699 9.9106 13.8312C10.0047 13.7925 10.1057 13.7734 10.2075 13.775H11.7075C12.1212 13.775 12.518 13.6106 12.8106 13.3181C13.1031 13.0255 13.2675 12.6287 13.2675 12.215V10.715C13.2659 10.6132 13.285 10.5122 13.3237 10.4181C13.3624 10.324 13.4198 10.2387 13.4925 10.1675L14.55 9.10999C14.6953 8.96452 14.8104 8.79176 14.8887 8.60164C14.9671 8.41152 15.007 8.20779 15.0063 8.00218C15.0056 7.79656 14.9643 7.59311 14.8847 7.40353C14.8051 7.21394 14.6888 7.04197 14.5425 6.89749ZM10.635 6.64999L6.95249 10.25C6.90055 10.3026 6.83864 10.3443 6.77038 10.3726C6.70212 10.4009 6.62889 10.4153 6.55499 10.415C6.48062 10.4139 6.40719 10.3982 6.33896 10.3685C6.27073 10.3389 6.20905 10.2961 6.15749 10.2425L4.37999 8.44249C4.32532 8.39044 4.28169 8.32793 4.25169 8.25867C4.22169 8.18941 4.20593 8.11482 4.20536 8.03934C4.20479 7.96387 4.21941 7.88905 4.24836 7.81934C4.27731 7.74964 4.31999 7.68647 4.37387 7.63361C4.42774 7.58074 4.4917 7.53926 4.56194 7.51163C4.63218 7.484 4.70726 7.47079 4.78271 7.47278C4.85816 7.47478 4.93244 7.49194 5.00112 7.52324C5.0698 7.55454 5.13148 7.59935 5.18249 7.65499L6.56249 9.05749L9.84749 5.84749C9.95296 5.74215 10.0959 5.68298 10.245 5.68298C10.394 5.68298 10.537 5.74215 10.6425 5.84749C10.6953 5.90034 10.737 5.96318 10.7653 6.03234C10.7935 6.1015 10.8077 6.1756 10.807 6.25031C10.8063 6.32502 10.7908 6.39884 10.7612 6.46746C10.7317 6.53608 10.6888 6.59813 10.635 6.64999Z"
+                  fill="currentColor"
+                />
+              </svg>
+            )
+              :
+              null
+            }
+
+
+          </div>
+        ),
         enableSorting: true,
-        size: 150,
+        size: 240,
         meta: {
           cellClassName: 'px-7',
         },
       },
-
       {
         id: 'npn',
         accessorFn: (row) => row.npn,
         header: ({ column }) => (
-          <DataGridColumnHeader title="Agent" column={column} />
+          <DataGridColumnHeader title="NPN" column={column} />
         ),
 
         cell: (info) => {
-          return (
-            <div className="p-4">
-              <div className="relative" ref={agentDropdownRef}>
-                {/* Display Area / Input Field */}
-                <input
-                  type="text"
-                  // Display the selected agent's name, or the current query for searching
-                  value={agentDropdownOpen ? agentSearchQuery : (selectedAgent?.firstName || "")}
-                  placeholder={selectedAgent?.firstName || "-- Select State --"}
-
-                  // On click/focus, open the dropdown and clear the display if an item is selected
-                  onFocus={() => {
-                    setAgentDropdownOpen(true);
-                    if (selectedAgent) setAgentSearchQuery(selectedAgent.firstName);
-                  }}
-                  onChange={(e) => setAgentSearchQuery(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  className="border rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-
-                {/* Hidden input to hold the required value for form submission */}
-                <input
-                  type="hidden"
-                  name="resident_license_state_id"
-                  value={selectedAgent?.id || ""}
-                  required
-                />
-
-                {/* Dropdown List */}
-                {agentDropdownOpen && (
-                  <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {/* Filter agents based on the search query */}
-                    {agents
-                      .filter((a) =>
-                        a.firstName.toLowerCase().includes(agentSearchQuery.toLowerCase())
-                      )
-                      .map((agent) => (
-                        <div
-                          key={agent.id}
-                          className={`p-2 cursor-pointer hover:bg-gray-100 ${selectedAgent?.id === agent.id ? "bg-gray-200 font-medium" : ""
-                            }`}
-                          onClick={() => {
-                            // 1. Select the agent object
-                            setSelectedAgent(agent);
-                            // 2. Clear query and close
-                            setAgentSearchQuery("");
-                            setAgentDropdownOpen(false);
-                            // 3. Manually trigger your custom handleChange if needed, passing the new value
-                            // handleChange({ target: { name: 'resident_license_state_id', value: agent.id } });
-                          }}
-                        >
-                          {agent.firstName}
-                        </div>
-                      ))}
-
-                    {/* Handle No Results */}
-                    {agents.filter((a) =>
-                      a.firstName.toLowerCase().includes(agentSearchQuery.toLowerCase())
-                    ).length === 0 && (
-                        <div className="p-2 text-gray-400">No matching agents found.</div>
-                      )}
-                  </div>
-                )}
-              </div>
-            </div>
-            // <Select
-            //   onClick={(e) => e.stopPropagation()}
-            //   value={selectedAgent ? selectedAgent.id : ""}
-            //   indicatorPosition="right"
-            //   onChange={(e) => {
-            //     setSelectedAgent(e.target.value); // updates state
-            //     handleChange(e); // call your custom handler
-            //   }}
-            // >
-            //   <SelectTrigger className="w-fit" size="sm">
-            //     <SelectValue placeholder={selectedAgent?.firstName || "-- Select State --"} />
-            //   </SelectTrigger>
-            //   <SelectContent side="top" className="min-w-[50px]">
-            //     {agent?.map((size) => (
-            //       <SelectItem key={size.id} value={`${size.id}`}>
-            //         {size.firstName}
-            //       </SelectItem>
-            //     ))}
-            //   </SelectContent>
-            // </Select>
-          );
+          return info.row.original.npn;
         },
         enableSorting: true,
-        size: 200,
+        size: 80,
         meta: {
           cellClassName: 'px-7',
         },
       },
-      // {
-      //   id: 'doctors',
-      //   accessorFn: (row) => row.doctors,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="Doctors"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     return info.row.original.doctors;
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'chronicHealth',
-      //   accessorFn: (row) => row.chronicHealth,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="CH"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'dentalVisionHearing',
-      //   accessorFn: (row) => row.dentalVisionHearing,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="DVH"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'do_takePrescriptions',
-      //   accessorFn: (row) => row.do_takePrescriptions,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="DTP"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'gymTransport',
-      //   accessorFn: (row) => row.gymTransport,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="GT"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'hasMedicare',
-      //   accessorFn: (row) => row.hasMedicare,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="HM"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'lowerPremium',
-      //   accessorFn: (row) => row.lowerPremium,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="LP"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'medicareParts',
-      //   accessorFn: (row) => row.medicareParts,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="MP"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'otherCoverage',
-      //   accessorFn: (row) => row.otherCoverage,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader
-      //       title="OC"
-      //       filter={<ColumnInputFilter column={column} />}
-      //       column={column}
-      //     />
-      //   ),
-
-      //   cell: (info) => {
-      //     const value = info.getValue(); // will be "Yes" / "No" / "N/A"
-      //     const variant = value === "No" ? "destructive" : "success";
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {value}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 120,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-
-      // {
-      //   id: 'email',
-      //   accessorFn: (row) => row.email,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader title="Email" column={column} />
-      //   ),
-
-      //   cell: (info) => (
-      //     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-      //       <span>{info.row.original.email}</span>
-      //       <svg
-      //         xmlns="http://www.w3.org/2000/svg"
-      //         width="15"
-      //         height="16"
-      //         viewBox="0 0 15 16"
-      //         fill="none"
-      //         className="text-primary"
-      //       >
-      //         <path
-      //           d="M14.5425 6.89749L13.5 5.83999C13.4273 5.76877 13.3699 5.6835 13.3312 5.58937C13.2925 5.49525 13.2734 5.39424 13.275 5.29249V3.79249C13.274 3.58699 13.2324 3.38371 13.1527 3.19432C13.0729 3.00494 12.9565 2.83318 12.8101 2.68892C12.6638 2.54466 12.4904 2.43073 12.2998 2.35369C12.1093 2.27665 11.9055 2.23801 11.7 2.23999H10.2C10.0982 2.24159 9.99722 2.22247 9.9031 2.18378C9.80898 2.1451 9.72371 2.08767 9.65249 2.01499L8.60249 0.957487C8.30998 0.665289 7.91344 0.50116 7.49999 0.50116C7.08654 0.50116 6.68999 0.665289 6.39749 0.957487L5.33999 1.99999C5.26876 2.07267 5.1835 2.1301 5.08937 2.16879C4.99525 2.20747 4.89424 2.22659 4.79249 2.22499H3.29249C3.08699 2.22597 2.88371 2.26754 2.69432 2.34731C2.50494 2.42709 2.33318 2.54349 2.18892 2.68985C2.04466 2.8362 1.93073 3.00961 1.85369 3.20013C1.77665 3.39064 1.73801 3.5945 1.73999 3.79999V5.29999C1.74159 5.40174 1.72247 5.50275 1.68378 5.59687C1.6451 5.691 1.58767 5.77627 1.51499 5.84749L0.457487 6.89749C0.165289 7.19 0.00115967 7.58654 0.00115967 7.99999C0.00115967 8.41344 0.165289 8.80998 0.457487 9.10249L1.49999 10.16C1.57267 10.2312 1.6301 10.3165 1.66878 10.4106C1.70747 10.5047 1.72659 10.6057 1.72499 10.7075V12.2075C1.72597 12.413 1.76754 12.6163 1.84731 12.8056C1.92709 12.995 2.04349 13.1668 2.18985 13.3111C2.3362 13.4553 2.50961 13.5692 2.70013 13.6463C2.89064 13.7233 3.0945 13.762 3.29999 13.76H4.79999C4.90174 13.7584 5.00275 13.7775 5.09687 13.8162C5.191 13.8549 5.27627 13.9123 5.34749 13.985L6.40499 15.0425C6.69749 15.3347 7.09404 15.4988 7.50749 15.4988C7.92094 15.4988 8.31748 15.3347 8.60999 15.0425L9.65999 14C9.73121 13.9273 9.81647 13.8699 9.9106 13.8312C10.0047 13.7925 10.1057 13.7734 10.2075 13.775H11.7075C12.1212 13.775 12.518 13.6106 12.8106 13.3181C13.1031 13.0255 13.2675 12.6287 13.2675 12.215V10.715C13.2659 10.6132 13.285 10.5122 13.3237 10.4181C13.3624 10.324 13.4198 10.2387 13.4925 10.1675L14.55 9.10999C14.6953 8.96452 14.8104 8.79176 14.8887 8.60164C14.9671 8.41152 15.007 8.20779 15.0063 8.00218C15.0056 7.79656 14.9643 7.59311 14.8847 7.40353C14.8051 7.21394 14.6888 7.04197 14.5425 6.89749ZM10.635 6.64999L6.95249 10.25C6.90055 10.3026 6.83864 10.3443 6.77038 10.3726C6.70212 10.4009 6.62889 10.4153 6.55499 10.415C6.48062 10.4139 6.40719 10.3982 6.33896 10.3685C6.27073 10.3389 6.20905 10.2961 6.15749 10.2425L4.37999 8.44249C4.32532 8.39044 4.28169 8.32793 4.25169 8.25867C4.22169 8.18941 4.20593 8.11482 4.20536 8.03934C4.20479 7.96387 4.21941 7.88905 4.24836 7.81934C4.27731 7.74964 4.31999 7.68647 4.37387 7.63361C4.42774 7.58074 4.4917 7.53926 4.56194 7.51163C4.63218 7.484 4.70726 7.47079 4.78271 7.47278C4.85816 7.47478 4.93244 7.49194 5.00112 7.52324C5.0698 7.55454 5.13148 7.59935 5.18249 7.65499L6.56249 9.05749L9.84749 5.84749C9.95296 5.74215 10.0959 5.68298 10.245 5.68298C10.394 5.68298 10.537 5.74215 10.6425 5.84749C10.6953 5.90034 10.737 5.96318 10.7653 6.03234C10.7935 6.1015 10.8077 6.1756 10.807 6.25031C10.8063 6.32502 10.7908 6.39884 10.7612 6.46746C10.7317 6.53608 10.6888 6.59813 10.635 6.64999Z"
-      //           fill="currentColor"
-      //         />
-      //       </svg>
-      //     </div>
-      //   ),
-      //   enableSorting: true,
-      //   size: 240,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'npn',
-      //   accessorFn: (row) => row.npn,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader title="NPN" column={column} />
-      //   ),
-
-      //   cell: (info) => {
-      //     return info.row.original.npn;
-      //   },
-      //   enableSorting: true,
-      //   size: 80,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
       {
         id: 'actions',
         // header: () => '',
         enableSorting: false,
         header: ({ column }) => (
-          <DataGridColumnHeader title="Source" column={column} />
+          <DataGridColumnHeader title="Chat" column={column} />
         ),
         cell: () => {
           return (
@@ -710,50 +368,54 @@ const Invoicing = () => {
             />
           );
         },
-        size: 40,
+        size: 70,
         meta: {
           cellClassName: 'px-6',
         },
       },
+      {
+        id: 'activity',
+        // header: () => '',
+        accessorFn: (row) => row.amount,
+        enableSorting: true,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Created At" column={column} />
+        ),
+        cell: (info) => {
+          return (
+            <div style={{ fontSize: '12px', display: 'grid' }}>
+              <div>{info.row.original.time}</div>
+              <div style={{ color: '#6b7280' }}>{info.row.original.relativeTime}</div>
+            </div>
+          );
+        },
+        size: 110,
+        meta: {
+          cellClassName: 'px-7',
+        },
+      },
+      {
+        id: 'status',
+        accessorFn: (row) => row.status,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Status" column={column} />
+        ),
 
-      // {
-      //   id: 'activity',
-      //   // header: () => '',
-      //   accessorFn: (row) => row.amount,
-      //   enableSorting: true,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader title="Activity" column={column} />
-      //   ),
-      //   cell: (info) => {
-      //     return info.row.original.activity;
-      //   },
-      //   size: 110,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
-      // {
-      //   id: 'status',
-      //   accessorFn: (row) => row.status,
-      //   header: ({ column }) => (
-      //     <DataGridColumnHeader title="Status" column={column} />
-      //   ),
+        cell: (info) => {
+          const variant = info.row.original.status === 'active' ? 'success' : info.row.original.status === 'inactive' ? 'destructive' : 'warning';
 
-      //   cell: (info) => {
-      //     const variant = info.row.original.status === 'active' ? 'success' : info.row.original.status === 'inactive' ? 'destructive' : 'warning';
-
-      //     return (
-      //       <Badge variant={variant} appearance="light">
-      //         {info.row.original.status}
-      //       </Badge>
-      //     );
-      //   },
-      //   enableSorting: true,
-      //   size: 90,
-      //   meta: {
-      //     cellClassName: 'px-7',
-      //   },
-      // },
+          return (
+            <Badge variant={variant} appearance="light">
+              {info.row.original.status}
+            </Badge>
+          );
+        },
+        enableSorting: true,
+        size: 90,
+        meta: {
+          cellClassName: 'px-7',
+        },
+      },
       {
         accessorKey: 'id',
         accessorFn: (row) => row.id,
@@ -762,7 +424,7 @@ const Invoicing = () => {
           return (
             // <TableRow>
             // <TableCell className="text-start">
-            <DropdownMenu10
+            <DropdownMenu2
               rowID={info.row.id}
               trigger={
                 <Button variant="ghost" mode="icon">
@@ -777,7 +439,7 @@ const Invoicing = () => {
         enableSorting: false,
         enableHiding: false,
         enableResizing: false,
-        size: 20,
+        size: 76,
         meta: {
           cellClassName: 'px-7',
         },
@@ -802,6 +464,7 @@ const Invoicing = () => {
       });
     }
   }, [rowSelection]);
+
 
   const table = useReactTable({
     columns,
@@ -880,6 +543,7 @@ const Invoicing = () => {
       </CardToolbar>
     );
   };
+
   return (
     <DataGrid
       table={table}
@@ -892,9 +556,57 @@ const Invoicing = () => {
       }}
     >
       <Card>
-        <CardHeader>
-          <CardTitle></CardTitle>
-          <Toolbar />
+        <CardHeader className="flex items-center justify-between">
+          {/* Left side: Title */}
+          <CardTitle>Showing 10 of 49,053 users</CardTitle>
+
+          {/* Right side: Actions */}
+          <div className="flex items-center gap-4">
+            {dropdown ? (
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+                >
+                  Take Action
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+
+                {/* Dropdown Menu */}
+                {open && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <ul className="py-2 text-gray-700">
+                      <li>
+                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                          Deactivate
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+            ) : (
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                {/* Trigger Button */}
+                <button
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-400 text-white rounded-lg shadow hover:bg-gray-500"
+                >
+                  Take Action
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+              </div>
+
+            )}
+            <Toolbar />
+          </div>
         </CardHeader>
         <CardTable>
           <ScrollArea>
@@ -908,7 +620,6 @@ const Invoicing = () => {
       </Card>
     </DataGrid>
   );
-
 };
 
 export { Invoicing };

@@ -32,7 +32,7 @@ const CardConnection = ({
 
   return (
     <Card>
-      <CardContent className="lg:pt-9 lg:pb-7.5">
+      <CardContent className="lg:pt-9 lg:pb-7.5 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
         <div className="flex justify-center mb-2.5">
           {avatar && (
             <AvatarSingle
@@ -92,7 +92,7 @@ const CardConnection = ({
           })}
         </div>
       </CardContent>
-      <CardFooter className="justify-center">
+      {/* <CardFooter className="justify-center">
         {connected ? (
           <Button variant="outline">
             <Link to="#">
@@ -108,7 +108,7 @@ const CardConnection = ({
             Connect
           </Button>
         )}
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };
