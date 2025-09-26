@@ -529,7 +529,7 @@ const AuthPassword = () => {
     >
       <Card>
         <CardHeader>
-          <CardTitle> HelloTotal Agents: 21 <span className='mx-4'>|</span> Policies: 21 <span className='mx-4'>|</span> Commision: $4000</CardTitle>
+          <CardTitle> Total Commision: $4000</CardTitle>
           <Toolbar />
         </CardHeader>
         <CardTable>
