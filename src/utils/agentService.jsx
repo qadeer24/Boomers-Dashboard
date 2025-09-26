@@ -2,8 +2,10 @@ import { http } from "../utils/httpService";
 
 export const getAgents = () => http.get("/admin/agents/list");
 export const getLeads = () => http.get("/admin/leads");
+export const getUplines = () => http.get("/admin/uplines");
 export const createLicenseInfo = (data) => http.post("/admin/agents/licenses", data);
 export const createBankInfo = (data) => http.post("/admin/agents/bank-info", data);
+export const createUpline = (data) => http.post("/admin/uplines", data);
 export const getAgentById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getAgentStatusById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getCountytByStateId = () => http.get(`/states`);

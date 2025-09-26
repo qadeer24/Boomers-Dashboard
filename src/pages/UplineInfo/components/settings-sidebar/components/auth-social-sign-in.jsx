@@ -529,7 +529,7 @@ const AuthSocialSignIn = () => {
     >
       <Card>
         <CardHeader id="leads">
-          <CardTitle> HelloTotal Agents: 21 <span className='mx-4'>|</span> Policies: 21 <span className='mx-4'>|</span> Commision: $4000</CardTitle>
+          <CardTitle> Total Leads</CardTitle>
           <Toolbar />
         </CardHeader>
         <CardTable>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import ProfilePhotoEditor from './ProfilePhotoEditor';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import { HexagonBadge } from '@/partials/common/hexagon-badge';
 import { MessagesSquare, Truck, Volleyball, Zap } from 'lucide-react';
 import { getAgentById } from '@/utils/agentService';
@@ -25,6 +25,8 @@ import { sub } from 'date-fns';
 import { da } from '@faker-js/faker';
 import { useNavigate } from 'react-router';
 // import { useParams } from 'react-router';
+import { useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -33,11 +35,13 @@ const handleChange = (e) => {
     [name]: value,
   }));
 };
+// const { id } = useParams();
 
 const PersonalInfo = () => {
+  const { id } = useParams();
+  console.log("id:", id);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { id } = useParams();
   const [update, setUpdate] = useState(false)
   const [dataupdated, setDataUpdated] = useState(false)
   const [data, setData] = useState({
@@ -212,8 +216,6 @@ const PersonalInfo = () => {
       }));
     }
   };
-
-
   // console.log("Fetched agents data:", data);
   return (
     <Card className="min-w-full">
@@ -359,7 +361,31 @@ const PersonalInfo = () => {
                 NPN
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="tel" value={data.npn ?? 'N/A'} name='npn' onChange={handleChange} />
+                <input type="tel" value={data.npn ?? 'N/A'} name='npn' onClick={handleCheck} onChange={handleChange} />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="py-3 text-secondary-foreground font-normal">
+                City
+              </TableCell>
+              <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
+                <input type="text" value={data.city ?? 'N/A'} name='city' onClick={handleCheck} onChange={handleChange} />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="py-3 text-secondary-foreground font-normal">
+                Address
+              </TableCell>
+              <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
+                <input type="text" value={data.address ?? 'N/A'} name='address' onClick={handleCheck} onChange={handleChange} />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="py-3 text-secondary-foreground font-normal">
+                Zip Code
+              </TableCell>
+              <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
+                <input type="text" value={data.zip ?? 'N/A'} name='zip' onClick={handleCheck} onChange={handleChange} />
               </TableCell>
             </TableRow>
           </TableBody>
@@ -372,8 +398,8 @@ const states = [{}];
 
 const LicensingInfo = () => {
 
-
   const { id } = useParams();
+
   const [selectedState, setSelectedState] = useState({});
   const [selectedOtherState, setSelectedOtherState] = useState([]);
   const safeSelectedOtherState = Array.isArray(selectedOtherState)
@@ -384,18 +410,35 @@ const LicensingInfo = () => {
   const [states, setStates] = useState([]);
 
 
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [ids, setIds] = useState({});
-
+  const [pdfFile, setPdfFile] = useState(null);
   const [isOpen, setIsOpen] = useState(false); // confirm modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // confirm modal
   const [create, setCreate] = useState(false); // create vs update mode
   const [update, setUpdate] = useState(false); // track unsaved edits
   const [showErrors, setShowErrors] = useState(false);
   const [showUpdate, setShowUpdate] = useState(true); // track unsaved edits
   const [dataupdated, setDataupdated] = useState(false); // track if data was updated
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     // console.log("Hello world")
@@ -606,7 +649,7 @@ const LicensingInfo = () => {
       formData.append("active_eo_policy", selectedEOpolicy);
       formData.append("_method", "PUT"); // if your backend needs method spoofing
 
-      await updateLicenseInfo(formData, data.id);
+      await updateLicenseInfo(formData, id);
 
       setMessage("License info updated successfully");
       setDataupdated(true); // Set to true to indicate data was updated
@@ -681,7 +724,60 @@ const LicensingInfo = () => {
     }
   };
 
+  const [formData, setFormData] = useState({
+    image: null,
+    uplineName: "",
+    email: "",
+    websiteUrl: "",
+    phoneNum: "",
+  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Submitted:", formData);
+    setIsOpen(false); // close modal after submit
+  };
 
+  const uplines = [
+    { id: 1, name: "Upline 1", abbreviation: "AL" },
+    { id: 2, name: "Upline 2", abbreviation: "AK" },
+    { id: 3, name: "Upline 3", abbreviation: "AS" },
+    { id: 4, name: "Upline 4", abbreviation: "AZ" },
+    { id: 5, name: "Upline 5", abbreviation: "AR" },
+  ];
+
+  const [selectedUplines, setSelectedUplines] = useState([]);
+  const [uplineQuery, setUplineQuery] = useState("");
+  const [uplineOpen, setUplineOpen] = useState(false);
+  const uplineDropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        uplineDropdownRef.current &&
+        !uplineDropdownRef.current.contains(event.target)
+      ) {
+        setUplineOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Single function to handle both adding and removing
+  const toggleUpline = (upline) => {
+    setSelectedUplines((prev) => {
+      // Check if the upline is already selected
+      if (prev.some((s) => s.id === upline.id)) {
+        // If it is, remove it
+        return prev.filter((s) => s.id !== upline.id);
+      } else {
+        // If not, add it
+        return [...prev, upline];
+      }
+    });
+  };
 
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -849,7 +945,7 @@ const LicensingInfo = () => {
 
 
                     {/* Dropdown */}
-                    <div className="relative mt-2">
+                    <div className="relative mt-2" ref={dropdownRef}>
                       <input
                         type="text"
                         value={query}
@@ -912,7 +1008,7 @@ const LicensingInfo = () => {
                     >
                       {/* Show dynamic placeholder only if no value is set */}
                       {!selectedUpline && (
-                        <option value="">-- Select Upline --</option>
+                        <option value="">-- Working with Upline? --</option>
                       )}
 
                       <option value="1">Yes</option>
@@ -920,11 +1016,89 @@ const LicensingInfo = () => {
                     </select>
 
                     {(selectedUpline === "1" || data.working_with_upline === 1) && (
-                      <input
-                        type="text"
-                        placeholder="Enter Upline"
-                        className="border rounded-lg p-2 my-3 w-full"
-                      />
+                      <div className="w-full py-4">
+                        {/* Selected tags */}
+                        {selectedUplines.length > 0 && (
+                          <div className="flex flex-wrap gap-2 border rounded-lg p-2 min-h-[45px] cursor-pointer">
+                            {selectedUplines.map((upline) => (
+                              <span
+                                key={upline.id}
+                                className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center gap-1 text-sm"
+                              >
+                                {upline.name}
+                                <button
+                                  type="button"
+                                  // Use the single toggleUpline function to remove
+                                  onClick={() => toggleUpline(upline)}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  ✕
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Dropdown */}
+
+                        <div className="relative mt-2" ref={uplineDropdownRef}>
+                          <input
+                            type="text"
+                            value={uplineQuery}
+                            onChange={(e) => {
+                              setUplineQuery(e.target.value);
+                              setUplineOpen(true);
+                            }}
+                            onFocus={() => setUplineOpen(true)}
+                            placeholder="Select Upline"
+                            className="border rounded-lg p-2 w-full"
+                          />
+
+                          {uplineOpen && (
+                            <div className="absolute z-10 bg-white border rounded-lg w-full max-h-40 overflow-y-auto">
+                              {/* Combine filters: by query and by selection */}
+                              {uplines
+                                .filter((upline) =>
+                                  upline.name.toLowerCase().includes(uplineQuery.toLowerCase())
+                                )
+                                .filter(
+                                  (upline) =>
+                                    !selectedUplines.some((selected) => selected.id === upline.id)
+                                ).length === 0 ? (
+                                <div className="p-2 text-gray-400">No results</div>
+                              ) : (
+                                uplines
+                                  .filter((upline) =>
+                                    upline.name.toLowerCase().includes(uplineQuery.toLowerCase())
+                                  )
+                                  .filter(
+                                    (upline) =>
+                                      !selectedUplines.some((selected) => selected.id === upline.id)
+                                  )
+                                  .map((upline) => (
+                                    <div
+                                      key={upline.id}
+                                      className="p-2 cursor-pointer hover:bg-gray-100"
+                                      onClick={() => {
+                                        toggleUpline(upline);
+                                        setUplineQuery("");
+                                        setUplineOpen(false);
+                                      }}
+                                    >
+                                      {upline.name}
+                                    </div>
+                                  ))
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {(selectedUpline === "0" || data.working_with_upline === 0) && (
+                      <div className='py-2 justify-end' style={{ fontSize: '12px' }}>
+                        Want to add an Upline? <span className='px-1' onClick={() => setIsModalOpen(true)} style={{ color: "red", textDecoration: "underline", cursor: 'pointer' }}>Click Here</span>
+                      </div>
                     )}
 
                   </div>
@@ -956,9 +1130,22 @@ const LicensingInfo = () => {
                     </select>
                     {(selectedEOpolicy === "1" || data.active_eo_policy === 1) && (
                       <div className="my-3 w-full">
+                        {pdfFile ? (
+                          <div>
+                            <a
+                              href={URL.createObjectURL(pdfFile)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className='text-blue-500 flex'
+                            >
+                              View File
+                              <File style={{width: '15px'}}/>
+                            </a>
+                          </div>
+                        ) : null}
                         <label
                           htmlFor="pdfUpload"
-                          className="border rounded-lg p-2 w-full block text-center cursor-pointer bg-gray-100 hover:bg-gray-200"
+                          className="border rounded-lg p-2 w-full block text-center cursor-pointer bg-blue-100 hover:bg-blue-200"
                         >
                           Upload PDF
                         </label>
@@ -967,16 +1154,18 @@ const LicensingInfo = () => {
                           type="file"
                           accept="application/pdf"
                           className="hidden"
-                          onChange={(e) => console.log(e.target.files[0])} // handle file here
+                          onChange={(e) => setPdfFile(e.target.files[0])} // handle file here
                         />
-                        <div className="text-right pt-2">
+                        <div className="text-right pt-2" style={{ fontSize: '12px' }}>
+                          Don’t have E&0?
                           <Link
                             to="https://www.calsurance.com/thebrokerage"
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "red", textDecoration: "underline", fontSize: '12px' }}
+                            className='px-1'
+                            style={{ color: "red", textDecoration: "underline" }}
                           >
-                            Don’t have E&0? Signup Here
+                            Signup Here
                           </Link>
                         </div>
                       </div>
@@ -989,12 +1178,101 @@ const LicensingInfo = () => {
           </Table>
         </CardContent>
       </Card>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 relative">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              style={{ cursor: 'pointer' }}
+            >
+              ✕
+            </button>
+            <h2 className="text-xl font-semibold mb-4">Add Upline</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Image Upload */}
+              <div>
+                <ProfilePhotoEditor
+                  initialImage={"/media/avatars/default-profile.jpeg"}
+                  onSave={(newFile) => {
+                    setFile(newFile);   // store the new file
+                    setUpdate(true);    // mark as updated
+                  }}
+                />
+              </div>
+
+              {/* Business Name */}
+              <div>
+                <label className="block text-sm font-medium">Upline Name</label>
+                <input
+                  type="text"
+                  name="uplineName"
+                  value={formData.uplineName}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              {/* Website URL */}
+              <div>
+                <label className="block text-sm font-medium">Website URL</label>
+                <input
+                  type="url"
+                  name="websiteUrl"
+                  value={formData.websiteUrl}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium">Phone Number</label>
+                <input
+                  type="phone"
+                  name="phoneNum"
+                  value={formData.phoneNum}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </form>
   );
 };
 
 const Bio = () => {
   const { id } = useParams();
+
   const [update, setUpdate] = useState(false);
   const [dataupdated, setDataUpdated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -1088,10 +1366,11 @@ const Bio = () => {
     setDataUpdated(true);
     useEffect(() => { handleAutoFetch(); }, [])
   };
+
   const handleCheck = (e) => {
     const { name, value } = e.target;
 
-    if (value === 'N/A') {
+    if (value === 'N/A' || value === 'null') {
       setData((prev) => ({
         ...prev,
         [name]: ''   // dynamically clear whichever field was clicked
@@ -1244,6 +1523,7 @@ const CommunityBadges = ({ title }) => {
 
 const LoginInfo = () => {
   const { id } = useParams();
+
   const navigate = useNavigate();
   const [data, setData] = useState({
     email: '',
@@ -1369,6 +1649,7 @@ const LoginInfo = () => {
 
 const BankInfo = () => {
   const { id } = useParams();
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -1524,7 +1805,7 @@ const BankInfo = () => {
       formData.append("address", data.address);
       formData.append("_method", "PUT"); // if your backend needs method spoofing
 
-      await updateBankInfo(formData, data.id);
+      await updateBankInfo(formData, id);
 
       setMessage("License info updated successfully");
       setDataupdated(true); // Set to true to indicate data was updated
@@ -1553,7 +1834,6 @@ const BankInfo = () => {
       }));
     }
   };
-
 
   const onConfirmUpdate = async () => {
     if (create) await submitCreate();

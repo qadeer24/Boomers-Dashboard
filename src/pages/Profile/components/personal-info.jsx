@@ -13,7 +13,7 @@ import { getAgentById } from '@/utils/agentService';
 import { updateAgent } from '@/utils/agentService';
 import axios from 'axios';
 import { set } from 'date-fns/set';
-import { updateLicenseInfo } from '@/utils/agentService';
+import { updateLicenseInfo, getUplines, createUpline } from '@/utils/agentService';
 import { createLicenseInfo } from '@/utils/agentService';
 import { updateBankInfo } from '@/utils/agentService';
 import { createBankInfo } from '@/utils/agentService';
@@ -580,7 +580,57 @@ const LicensingInfo = () => {
   // ]);
 
 
+  const getAllUplines = async () => {
+    setLoading(true);
+    setMessage("");
+    try {
+      const response = await getUplines();
+      console.log("Uplines", response);
+    } catch (err) {
+      console.error("Error fetching agent:", err.message);
+      setErrors({ general: err?.message || "Failed to fetch license info" });
+      // Still prepare an empty form in create mode
+    } finally {
+      setLoading(false);
+    }
+  }
 
+  const HandleCreateUpline = async () => {
+    setLoading(true);
+    setMessage("");
+    setLoading(true);
+    setMessage("");
+    setErrors({});
+    try {
+      const formData = {
+        name: "John Doe",
+        email: "john@example.com",
+        website_url: "https://example.com",
+        phone: "+1234567890",
+        status: 1,
+
+      }; // Use the current state data
+      console.log("Submitting create with data:", formData);
+
+      await createUpline(formData);
+
+      setMessage("License info created successfully");
+      console.log("Upline Added updated:", dataupdated);
+      // refresh from server
+      setTimeout(() => setDataupdated(false), 3000);
+      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
+      // ✅ Refresh page after success
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000); // wait 1 second so user can see the message
+    } catch (error) {
+      console.error("Error creating license info:", error);
+      setErrors({ general: error?.message || "Create failed" });
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
 
   const submitCreate = async () => {
@@ -664,6 +714,7 @@ const LicensingInfo = () => {
       setLoading(false);
     }
   };
+
 
   const onConfirmUpdate = async () => {
     if (create) await submitCreate();
@@ -774,7 +825,8 @@ const LicensingInfo = () => {
       }
     });
   };
-
+  // Add this state to your component:
+  const [isDropdownFocused, setIsDropdownFocused] = useState(false);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   // console.log("Profile:", data.profile);
@@ -892,19 +944,32 @@ const LicensingInfo = () => {
                       className="border rounded-lg p-2 w-full"
                       name="resident_license_state_id"
                       value={selectedState ? selectedState.id : ""}
+                      onFocus={() => setIsDropdownFocused(true)} // Set focus on open/click
+                      onBlur={() => setIsDropdownFocused(false)} // Remove focus on close/blur
                       onChange={(e) => {
                         setSelectedState(e.target.value); // updates state
                         handleChange(e); // call your custom handler
+                        setIsDropdownFocused(false); // Close/blur logic after selection
                       }}
                       required
                     >
-                      <option value="">
-                        {selectedState?.name || "-- Select State --"}
-                      </option>
+                      {/* Conditional Placeholder Option */}
+                      {
+                        !isDropdownFocused && // Condition 1: Dropdown is NOT focused
+                        (!selectedState || !selectedState.id) && // Condition 2: NO state has been selected
+                        (
+                          <option
+                            value=""
+                          >
+                            {selectedState?.name || "-- Select State --"}
+                          </option>
+                        )
+                      }
 
-                      {states.map((states) => (
-                        <option key={states.id} value={states.id}>
-                          {states.name}
+                      {/* Actual State Options */}
+                      {states.map((state) => (
+                        <option key={state.id} value={state.id}>
+                          {state.name}
                         </option>
                       ))}
                     </select>
@@ -1135,7 +1200,7 @@ const LicensingInfo = () => {
                               className='text-blue-500 flex'
                             >
                               View File
-                              <File style={{width: '15px'}}/>
+                              <File style={{ width: '15px' }} />
                             </a>
                           </div>
                         ) : null}
@@ -1255,6 +1320,7 @@ const LicensingInfo = () => {
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                onClick={HandleCreateUpline}
               >
                 Save
               </button>
