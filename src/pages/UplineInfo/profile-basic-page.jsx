@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { PageMenu } from '@/pages/public-profile';
-import { UserHero } from '@/partials/common/user-hero';
+import { UserHero4 } from '@/partials/common/user-hero-4';
 import { DropdownMenu9 } from '@/partials/dropdown-menu/dropdown-menu-9';
 import { Navbar, NavbarActions } from '@/partials/navbar/navbar';
 import {
@@ -21,7 +21,7 @@ import { formatDate, formatDistanceToNow } from 'date-fns';
 import { FormattedDate } from 'react-intl';
 import { id } from 'date-fns/locale/id';
 import { useParams } from 'react-router-dom';
-import { getAgentById } from '@/utils/agentService';
+import { getUplineById } from '@/utils/agentService';
 import { AccountSettingsSidebar } from './components/settings-sidebar/account-basic-sidebar';
 import { AccountSettingsSidebarContent } from './components/settings-sidebar/account-basic-content';
 
@@ -31,26 +31,26 @@ export function UplineProfilePage() {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const [errors, setErrors] = useState({});
+  
+  useEffect(() => {
+    // console.log("Hello world")
+    handleAutoFetch();
+  }, []);
+  const handleAutoFetch = async () => {
+    console.log("Fetching agents data...");
+    setLoading(true);
+    setMessage("");
+    setErrors({});
 
-  // useEffect(() => {
-  //   // console.log("Hello world")
-  //   handleAutoFetch();
-  // }, []);
-  // const handleAutoFetch = async () => {
-  //   console.log("Fetching agents data...");
-  //   setLoading(true);
-  //   setMessage("");
-  //   setErrors({});
 
+    getUplineById(id)
+      .then((response) => {
+        const agentsArray = response.data.upline;
+        setData(agentsArray || []);
+      })
+      .catch((err) => console.error("Error fetching users:", err));
 
-  //   getAgentById(id)
-  //     .then((response) => {
-  //       const agentsArray = response.data.agent;
-  //       setData(agentsArray || []);
-  //     })
-  //     .catch((err) => console.error("Error fetching users:", err));
-
-  // };
+  };
 
 
   const [pagination, setPagination] = useState({
@@ -60,17 +60,17 @@ export function UplineProfilePage() {
   const [rowSelection] = useState({});
   const [sorting, setSorting] = useState([{ id: 'date', desc: true }]);
 
-
+  console.log("Uplines:", data);
 
   return (
     <Fragment>
-      <UserHero
-        name={data.firstName || "Upline Name"}
-        image={data.profile }
+      <UserHero4
+        name={data.name || "Upline Name"}
+        image={data.photo }
         info={[
           // { label: data.phoneNumber || "Agents", icon: Luggage },
-          { label: data.country || "email@gmail.com", icon: Mail },
-          { email: data.email || "UplineURL.com", icon: MapPin },
+          { label: data.email || "email@gmail.com", icon: Mail },
+          { email: data.website_url || "UplineURL.com", icon: MapPin },
         ]}
       />
 

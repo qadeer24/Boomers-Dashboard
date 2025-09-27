@@ -7,6 +7,7 @@ export const createLicenseInfo = (data) => http.post("/admin/agents/licenses", d
 export const createBankInfo = (data) => http.post("/admin/agents/bank-info", data);
 export const createUpline = (data) => http.post("/admin/uplines", data);
 export const getAgentById = (id) => http.get(`/admin/agent/id/${id}`);
+export const getUplineById = (id) => http.get(`/admin/uplines/${id}`);
 export const getAgentStatusById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getCountytByStateId = () => http.get(`/states`);
 export const getprofileStatus = () => http.get(`/profile/completion`);

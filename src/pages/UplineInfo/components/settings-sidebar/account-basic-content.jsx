@@ -79,10 +79,12 @@ export function AccountSettingsSidebarContent() {
         </div>
       )}
       <div className="flex flex-col items-stretch grow gap-5 lg:gap-7.5">
+        <div className='border-b py-8'>
         <BasicSettings />
+        </div>
         <AuthEmail />
-        <AuthPassword />
         <AuthSocialSignIn />
+        <AuthPassword />
         {/* <AuthSingleSingOn /> */}
         {/* <AuthTwoFactor />
         <AdvancedSettingsPreferences />

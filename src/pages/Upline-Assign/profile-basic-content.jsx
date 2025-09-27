@@ -4,17 +4,12 @@ import { File, Users, Link } from "lucide-react"; // Importing Lucide React icon
 import { getAgents } from '@/utils/agentService';
 import { format } from 'date-fns';
 import { formatDistanceToNow } from 'date-fns';
+import { getUplineById, getUplines } from "@/utils/agentService";
 
 
 export function ProfileDefaultContent() {
-  const uplines = [
-    { id: 1, name: "Upline 1", abbreviation: "AL" },
-    { id: 2, name: "Upline 2", abbreviation: "AK" },
-    { id: 3, name: "Upline 3", abbreviation: "AS" },
-    { id: 4, name: "Upline 4", abbreviation: "AZ" },
-    { id: 5, name: "Upline 5", abbreviation: "AR" },
-  ];
 
+  const [uplines, setUplines] = useState([]);
   const [agents, setAgents] = useState([]);
 
 
@@ -47,6 +42,7 @@ export function ProfileDefaultContent() {
 
   useEffect(() => {
     handleAutoFetch();
+    handleAutoFetchUplines();
   }, []);
 
   const handleAutoFetch = async () => {
@@ -79,13 +75,25 @@ export function ProfileDefaultContent() {
         }));
 
         setAgents(formattedData);
-        console.log("Agents data fetched successfully:", formattedData);
+        // console.log("Agents data fetched successfully:", formattedData);
       })
       .catch((err) => console.error("Error fetching users:", err));
 
-
   };
 
+  const handleAutoFetchUplines = async () => {
+    console.log("Fetching agents data...");
+    setLoading(true);
+    setMessage("");
+    setErrors({});
+    getUplines()
+    .then((response) => {
+      const UplinesArray = response.data.uplines;
+      setUplines(UplinesArray);
+      console.log("Uplines:", UplinesArray);
+    })
+      .catch((err) => console.error("Error fetching uplines:", err));
+  }
   // Helper function to handle a single selection (Upline)
   const handleUplineSelect = (upline) => {
     setSelectedUpline(upline);

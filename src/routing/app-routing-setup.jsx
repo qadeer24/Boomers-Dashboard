@@ -106,6 +106,10 @@ import { Navigate, Route, Routes } from 'react-router';
 import { LeadsPage, LeadsOtherInfoPage } from '@/pages/Leads';
 import { NewCarrier } from '@/pages/Carriers/New-Carrier'
 import { AssignUplinePage } from '@/pages/Upline-Assign';
+import { AllCarriersPage } from '@/pages/Carriers-All';
+import { CarrierProfilePage } from '@/pages/CarrierInfo';
+import { SingleUplinePage } from '@/pages/SingleUplinePage';
+import { SingleCarrierPage } from '@/pages/SingleCarrierPage';
 // import ResetPassword from '@/pages/ResetPass/ResetPassUrlHandler.jsx';
 // import CreateNewPass from '@/auth/pages/Changepass';
 
@@ -134,16 +138,32 @@ export function AppRoutingSetup() {
           <Route path="/agent/get-contracted/completed" element={<GetContractedCompleted />} />
           <Route path="/agent/my-contracts" element={<MyContracts />} />
           <Route path="/dark-sidebar" element={<Demo1DarkSidebarPage />} />
-          <Route path="//admin/assign/upline" element={<AssignUplinePage />} />
-           
+          <Route path="/admin/assign/upline" element={<AssignUplinePage />} />
+
           <Route
             path="/admin/agent/detail/:id"
             exact
             element={<ProfileDefaultPage />}
           />
+
           <Route
-            path="/agent/Uplines/details/:id"
+            path="/admin/Uplines/detail/:id"
+            exact
+            element={<SingleUplinePage />}
+          />
+
+          <Route
+            path="/admin/Carriers/detail/:id"
+            exact
+            element={<SingleCarrierPage />}
+          />
+          <Route
+            path="/agent/Uplines/:id"
             element={<UplineProfilePage />}
+          />
+          <Route
+            path="/agent/Carriers/:id"
+            element={<CarrierProfilePage />}
           />
           <Route path="/admin/carriers/new-carrier" element={<NewCarrier />} />
           <Route path="/admin/leads" element={<LeadsPage />} />
@@ -219,6 +239,11 @@ export function AppRoutingSetup() {
           <Route
             path="/agent/Uplines"
             element={<ProfileNetworkPage />}
+          />
+
+          <Route
+            path="/agent/Carriers"
+            element={<AllCarriersPage />}
           />
 
           <Route

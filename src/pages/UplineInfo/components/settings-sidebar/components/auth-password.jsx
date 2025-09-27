@@ -527,14 +527,15 @@ const AuthPassword = () => {
         cellBorder: true,
       }}
     >
+      <h1 className='font-bold underline'>Commissions <span className='font-normal'>{"(Coming Soon)"}</span></h1>
       <Card>
         <CardHeader>
-          <CardTitle> Total Commision: $4000</CardTitle>
+          <CardTitle></CardTitle>
           <Toolbar />
         </CardHeader>
         <CardTable>
           <ScrollArea>
-            <DataGridTable />
+            {/* <DataGridTable /> */}
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </CardTable>

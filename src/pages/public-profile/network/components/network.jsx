@@ -276,7 +276,7 @@ const Network = ({ setDropdown, setShowEdit }) => {
         className={`relative transition`}
       >
         {/* Checkbox Icon */}
-        <div onClick={(e) => { e.stopPropagation(); navigate(`/agent/Uplines/details/${index}`); }}>
+        <div onClick={(e) => { e.stopPropagation(); navigate(`/agent/Uplines/${index}`); }}>
 
           <input
             type="checkbox"

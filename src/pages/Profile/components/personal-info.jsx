@@ -421,6 +421,7 @@ const LicensingInfo = () => {
   const [showUpdate, setShowUpdate] = useState(true); // track unsaved edits
   const [dataupdated, setDataupdated] = useState(false); // track if data was updated
   const dropdownRef = useRef(null);
+  const [uplines, setUplines] = useState([]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -583,8 +584,10 @@ const LicensingInfo = () => {
   const getAllUplines = async () => {
     setLoading(true);
     setMessage("");
+    setErrors({});
     try {
       const response = await getUplines();
+      setUplines(response.data.uplines);
       console.log("Uplines", response);
     } catch (err) {
       console.error("Error fetching agent:", err.message);
@@ -596,8 +599,6 @@ const LicensingInfo = () => {
   }
 
   const HandleCreateUpline = async () => {
-    setLoading(true);
-    setMessage("");
     setLoading(true);
     setMessage("");
     setErrors({});
@@ -784,13 +785,6 @@ const LicensingInfo = () => {
     setIsOpen(false); // close modal after submit
   };
 
-  const uplines = [
-    { id: 1, name: "Upline 1", abbreviation: "AL" },
-    { id: 2, name: "Upline 2", abbreviation: "AK" },
-    { id: 3, name: "Upline 3", abbreviation: "AS" },
-    { id: 4, name: "Upline 4", abbreviation: "AZ" },
-    { id: 5, name: "Upline 5", abbreviation: "AR" },
-  ];
 
   const [selectedUplines, setSelectedUplines] = useState([]);
   const [uplineQuery, setUplineQuery] = useState("");
@@ -1064,6 +1058,7 @@ const LicensingInfo = () => {
                       onChange={(e) => {
                         setSelectedUpline(e.target.value);
                         handleChange(e);
+                        getAllUplines();
                       }}
                       required
                     >
@@ -1072,7 +1067,7 @@ const LicensingInfo = () => {
                         <option value="">-- Working with Upline? --</option>
                       )}
 
-                      <option value="1">Yes</option>
+                      <option value="1" >Yes</option>
                       <option value="0">No</option>
                     </select>
 
@@ -1153,14 +1148,13 @@ const LicensingInfo = () => {
                             </div>
                           )}
                         </div>
+
+                        <div className='py-2 justify-end' style={{ fontSize: '12px' }}>
+                          Want to add an Upline? <span className='px-1' onClick={() => setIsModalOpen(true)} style={{ color: "red", textDecoration: "underline", cursor: 'pointer' }}>Click Here</span>
+                        </div>
                       </div>
                     )}
 
-                    {(selectedUpline === "0" || data.working_with_upline === 0) && (
-                      <div className='py-2 justify-end' style={{ fontSize: '12px' }}>
-                        Want to add an Upline? <span className='px-1' onClick={() => setIsModalOpen(true)} style={{ color: "red", textDecoration: "underline", cursor: 'pointer' }}>Click Here</span>
-                      </div>
-                    )}
 
                   </div>
                 </TableCell>
