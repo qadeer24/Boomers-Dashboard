@@ -305,22 +305,6 @@ const AuthEmail = () => {
         },
       },
       {
-        id: 'Last Name',
-        accessorFn: (row) => row.date,
-        header: ({ column }) => (
-          <DataGridColumnHeader title="Carrier" column={column} />
-        ),
-
-        cell: (info) => {
-          return info.row.original.date;
-        },
-        enableSorting: true,
-        size: 120,
-        meta: {
-          cellClassName: 'px-7',
-        },
-      },
-      {
         id: 'dueDate',
         accessorFn: (row) => row.dueDate,
         header: ({ column }) => (
@@ -331,39 +315,7 @@ const AuthEmail = () => {
           return info.row.original.dueDate;
         },
         enableSorting: true,
-        size: 190,
-        meta: {
-          cellClassName: 'px-7',
-        },
-      },
-      {
-        id: 'amount',
-        accessorFn: (row) => row.amount,
-        header: ({ column }) => (
-          <DataGridColumnHeader title="Coverage Type" column={column} />
-        ),
-
-        cell: (info) => {
-          return info.row.original.amount;
-        },
-        enableSorting: true,
-        size: 180,
-        meta: {
-          cellClassName: 'px-7',
-        },
-      },
-      {
-        id: 'activity',
-        // header: () => '',
-        accessorFn: (row) => row.amount,
-        enableSorting: true,
-        header: ({ column }) => (
-          <DataGridColumnHeader title="Submitted Date" column={column} />
-        ),
-        cell: (info) => {
-          return info.row.original.activity;
-        },
-        size: 130,
+        size: 140,
         meta: {
           cellClassName: 'px-7',
         },
@@ -385,7 +337,55 @@ const AuthEmail = () => {
           );
         },
         enableSorting: true,
-        size: 90,
+        size: 100,
+        meta: {
+          cellClassName: 'px-7',
+        },
+      },
+      {
+        id: 'Last Name',
+        accessorFn: (row) => row.date,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Carrier" column={column} />
+        ),
+
+        cell: (info) => {
+          return info.row.original.date;
+        },
+        enableSorting: true,
+        size: 120,
+        meta: {
+          cellClassName: 'px-7',
+        },
+      },
+      {
+        id: 'amount',
+        accessorFn: (row) => row.amount,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Coverage Type" column={column} />
+        ),
+
+        cell: (info) => {
+          return info.row.original.amount;
+        },
+        enableSorting: true,
+        size: 150,
+        meta: {
+          cellClassName: 'px-7',
+        },
+      },
+      {
+        id: 'activity',
+        // header: () => '',
+        accessorFn: (row) => row.amount,
+        enableSorting: true,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Submitted Date" column={column} />
+        ),
+        cell: (info) => {
+          return info.row.original.activity;
+        },
+        size: 130,
         meta: {
           cellClassName: 'px-7',
         },
@@ -527,6 +527,7 @@ const AuthEmail = () => {
         cellBorder: true,
       }}
     >
+      <h1 className='font-bold underline'>Policies</h1>
       <Card>
         <CardHeader id="policies">
           <CardTitle> Total Policies: 21 </CardTitle>

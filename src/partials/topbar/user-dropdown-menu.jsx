@@ -36,11 +36,13 @@ import { Switch } from '@/components/ui/switch';
 import { da } from '@faker-js/faker';
 import { useNavigate } from 'react-router';
 import { languages } from 'eslint-plugin-prettier';
+import { useState } from 'react';
 
 export function UserDropdownMenu({ trigger, profile, first_name, last_name, email }) {
   const { logout, user } = useAuth();
   const { currenLanguage, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const [ switchProfile, setSwitchProfile ] = useState(0);
   const navigate = useNavigate();
 
   // Use display data from currentUser
@@ -60,6 +62,14 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
 
   const handleThemeToggle = (checked) => {
     setTheme(checked ? 'dark' : 'light');
+  };
+
+  const handlePersonalProfileToggle = (checked) => {
+    setSwitchProfile(checked ? 0 : 1);
+  };
+
+  const handleAgencyProfileToggle = (checked) => {
+    setSwitchProfile(checked ? 1 : 0);
   };
 
   const handleLogout = () => {
@@ -268,7 +278,39 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
 
         <DropdownMenuSeparator />
 
-        {/* Footer */}
+        <h2 className='font-bold px-2'>Switch Profiles</h2>
+
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onSelect={(event) => event.preventDefault()}
+        >
+          <div className="flex items-center gap-2 justify-between grow">
+            Switch To Agent
+            <Switch
+              size="sm"
+              checked={switchProfile === 0}
+              onCheckedChange={handlePersonalProfileToggle}
+            />
+          </div>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onSelect={(event) => event.preventDefault()}
+        >
+          <div className="flex items-center gap-2 justify-between grow">
+            Switch To Agency 
+            <Switch
+              size="sm"
+              checked={switchProfile === 1}
+              onCheckedChange={handleAgencyProfileToggle}
+            />
+          </div>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+
         <DropdownMenuItem
           className="flex items-center gap-2"
           onSelect={(event) => event.preventDefault()}
@@ -283,6 +325,7 @@ export function UserDropdownMenu({ trigger, profile, first_name, last_name, emai
             />
           </div>
         </DropdownMenuItem>
+
         <div className="p-2 mt-1">
           <Button
             variant="outline"

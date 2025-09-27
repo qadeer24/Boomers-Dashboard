@@ -13,12 +13,12 @@ export function AccountSettingsSidebar() {
       active: false,
     },
     {
-      title: 'Commissions',
-      target: 'commissions',
-    },
-    {
       title: 'Leads',
       target: 'leads',
+    },
+    {
+      title: 'Commissions',
+      target: 'commissions',
     },
     // {
     //   title: 'Single Sign On(SSO)',
