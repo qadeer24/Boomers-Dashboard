@@ -20,6 +20,7 @@ import { Network } from './components';
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from "lucide-react";
 import { Link } from 'lucide-react';
+import { deleteUpline } from '@/utils/agentService';
 import ProfilePhotoEditor from './components/ProfilePhotoEditor';
 
 export function ProfileNetworkPage() {
@@ -29,8 +30,9 @@ export function ProfileNetworkPage() {
   const [name, setName] = useState("");
   const [info, setInfo] = useState("");
   const [email, setEmail] = useState("");
-  
+
   const [dropdown, setDropdown] = useState(false);
+  const [uplineId, setUplineId] = useState(null);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -54,6 +56,15 @@ export function ProfileNetworkPage() {
   );
   const uplianse = 10;
 
+  const handleDeleteUpline = () => {
+    deleteUpline(uplineId)
+      .then((response) => {
+        const agentsArray = response || [];
+        console.log("Upline Deleted:", agentsArray);
+      })
+      .catch((err) => console.error("Error fetching uplines:", err));
+
+  };
 
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -78,7 +89,7 @@ export function ProfileNetworkPage() {
     setIsOpen(false); // close modal after submit
   };
 
-
+  console.log("Upline Id: ", uplineId);
   return (
     <Fragment>
       <UserHero2
@@ -116,25 +127,25 @@ export function ProfileNetworkPage() {
                 {open && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <ul className="py-2 text-gray-700">
+                      <li>
+                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                          View
+                        </button>
+                      </li>
                       {showEdit ? (
                         <div>
-                          <li>
-                            <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                              View
-                            </button>
-                          </li>
                           <li>
                             <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
                               Edit
                             </button>
                           </li>
+                          <li>
+                            <button className="w-full text-left px-4 py-2 hover:bg-gray-100" onClick={handleDeleteUpline}>
+                              Delete
+                            </button>
+                          </li>
                         </div>
                       ) : null}
-                      <li>
-                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                          Export
-                        </button>
-                      </li>
                     </ul>
                   </div>
                 )}
@@ -172,7 +183,7 @@ export function ProfileNetworkPage() {
 
       </Container>
       <Container>
-        <Network setDropdown={setDropdown} setShowEdit={setShowEdit} />
+        <Network setDropdown={setDropdown} setShowEdit={setShowEdit} setUplineId={setUplineId} />
       </Container>
       {/* Modal */}
       {isOpen && (

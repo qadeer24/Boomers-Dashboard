@@ -5,7 +5,12 @@ export const getLeads = () => http.get("/admin/leads");
 export const getUplines = () => http.get("/admin/uplines");
 export const createLicenseInfo = (data) => http.post("/admin/agents/licenses", data);
 export const createBankInfo = (data) => http.post("/admin/agents/bank-info", data);
-export const createUpline = (data) => http.post("/admin/uplines", data);
+export const createUpline = (data, token) => http.post("/admin/uplines", data, {
+  headers: {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  }, // Content-Type ko manually set mat karo
+});
 export const getAgentById = (id) => http.get(`/admin/agent/id/${id}`);
 export const getUplineById = (id) => http.get(`/admin/uplines/${id}`);
 export const getAgentStatusById = (id) => http.get(`/admin/agent/id/${id}`);
@@ -26,4 +31,4 @@ export const updateAgent = (data, id, token) =>
   });
 
 // export const updateUser = (id, data) =>  http.put(`/admin/agent/${id}`, data);
-// export const deleteUser = (id) => http.delete(`/users/${id}`);
+export const deleteUpline = (id) => http.delete(`/admin/uplines/${id}`);
