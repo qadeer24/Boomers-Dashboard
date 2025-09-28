@@ -185,12 +185,12 @@ const PersonalInfo = () => {
         .then((response) => {
           console.log("Agent updated successfully:", response.data);
           setMessage("Agent updated successfully");
+          setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
         })
         .catch((error) => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
-      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);

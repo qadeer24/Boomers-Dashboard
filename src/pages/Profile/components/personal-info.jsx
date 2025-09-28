@@ -159,7 +159,7 @@ const PersonalInfo = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
-      formData.append("description", data.description);
+      formData.append("description", data.description); 
       // if (file) {
       //   // user uploaded a new file
       //   formData.append("profile", base64ToFile(file, "profile.png"));
@@ -170,7 +170,7 @@ const PersonalInfo = () => {
       // }
       // formData.append("profile", data.profile); // This should be a File object
       if (file) {
-        formData.append("profile", base64ToFile(file, "profile.png"));
+        formData.append("profile", file);
       }
       formData.append("_method", "PUT"); // tell backend it's a PUT request
       formData.forEach((value, key) => {
@@ -181,12 +181,12 @@ const PersonalInfo = () => {
         .then((response) => {
           console.log("Agent updated successfully:", response.data);
           setMessage("Agent updated successfully");
+          setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
         })
         .catch((error) => {
           console.error("Error updating agent:", error);
           setErrors({ general: error.message });
         });
-      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
 
     } catch (err) {
       console.error("Error updating user:", err);
@@ -281,7 +281,7 @@ const PersonalInfo = () => {
                 <ProfilePhotoEditor
                   initialImage={data.profile}
                   onSave={(newFile) => {
-                    setFile(newFile);   // store the new file
+                    setFile(base64ToFile(newFile, "profile.png"));   // store the new file
                     setUpdate(true);    // mark as updated
                   }}
                 />
@@ -422,7 +422,7 @@ const LicensingInfo = () => {
   const [dataupdated, setDataupdated] = useState(false); // track if data was updated
   const dropdownRef = useRef(null);
   const [uplines, setUplines] = useState([]);
-
+  const token = localStorage.getItem("token");
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -495,6 +495,15 @@ const LicensingInfo = () => {
       [name]: value,
     }));
     setUpdate(true);
+    setMessage("");
+  };
+
+  const handleUplineChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
     setMessage("");
   };
 
@@ -597,25 +606,48 @@ const LicensingInfo = () => {
       setLoading(false);
     }
   }
+  const [formData, setFormData] = useState({
+    image: null,
+    uplineName: "",
+    email: "",
+    websiteUrl: "",
+    phoneNum: "",
+  });
+  const [file, setFile] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   const HandleCreateUpline = async () => {
     setLoading(true);
     setMessage("");
     setErrors({});
     try {
-      const formData = {
-        name: "John Doe",
-        email: "john@example.com",
-        website_url: "https://example.com",
-        phone: "+1234567890",
-        status: 1,
+      const uplineFormData = {
+        name: formData.uplineName,
+        email: formData.email,
+        website_url: formData.websiteUrl,
+        phone: formData.phoneNum,
+        photo: file,
+        status: 0,
 
       }; // Use the current state data
-      console.log("Submitting create with data:", formData);
+      console.log("Submitting create with data:", uplineFormData);
 
-      await createUpline(formData);
+      createUpline(uplineFormData, token)
+        .then((response) => {
+          const agentsArray = response || [];
+          console.log("Upline created:", agentsArray);
+          setMessage("Upline created successfully");
+          setShowAlert(true);
+          getAllUplines();
+          
+          // Hide alert & close modal after 4 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+            setIsModalOpen(false);
+          }, 4000);
+        })
+        .catch((err) => console.error("Error fetching uplines:", err));
 
-      setMessage("License info created successfully");
       console.log("Upline Added updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
@@ -772,13 +804,7 @@ const LicensingInfo = () => {
     }
   };
 
-  const [formData, setFormData] = useState({
-    image: null,
-    uplineName: "",
-    email: "",
-    websiteUrl: "",
-    phoneNum: "",
-  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Submitted:", formData);
@@ -823,7 +849,7 @@ const LicensingInfo = () => {
   const [isDropdownFocused, setIsDropdownFocused] = useState(false);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  // console.log("Profile:", data.profile);
+  console.log("image:", file);
   return (
     <form action="">
       <Card className="min-w-full">
@@ -1237,6 +1263,23 @@ const LicensingInfo = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 relative">
+            {showAlert ? (
+              <div className="max-w-full ">
+                <div className="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 shadow-md">
+                  <svg
+                    className="flex-shrink-0 inline w-5 h-5 mr-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4.75a1 1 0 1 1 2 0v4.5a1 1 0 0 1-2 0v-4.5ZM10 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
+                  </svg>
+                  <span className="font-medium">Upline Created!</span>
+                  <span className="ml-2">You will be updated shortly by admin.</span>
+                </div>
+              </div>
+            ) : null}
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -1246,7 +1289,7 @@ const LicensingInfo = () => {
             </button>
             <h2 className="text-xl font-semibold mb-4">Add Upline</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={HandleCreateUpline} className="space-y-4">
               {/* Image Upload */}
               <div>
                 <ProfilePhotoEditor
@@ -1265,7 +1308,7 @@ const LicensingInfo = () => {
                   type="text"
                   name="uplineName"
                   value={formData.uplineName}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -1278,7 +1321,7 @@ const LicensingInfo = () => {
                   type="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -1291,7 +1334,7 @@ const LicensingInfo = () => {
                   type="url"
                   name="websiteUrl"
                   value={formData.websiteUrl}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -1304,7 +1347,7 @@ const LicensingInfo = () => {
                   type="phone"
                   name="phoneNum"
                   value={formData.phoneNum}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -1312,9 +1355,9 @@ const LicensingInfo = () => {
 
               {/* Submit */}
               <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                type="button"
                 onClick={HandleCreateUpline}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
               >
                 Save
               </button>
