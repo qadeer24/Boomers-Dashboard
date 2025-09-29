@@ -34,6 +34,7 @@ export function ProfileNetworkPage() {
   const [dropdown, setDropdown] = useState(false);
   const [uplineId, setUplineId] = useState(null);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -57,10 +58,18 @@ export function ProfileNetworkPage() {
   const uplianse = 10;
 
   const handleDeleteUpline = () => {
+    setLoading(true);
+
     deleteUpline(uplineId)
       .then((response) => {
         const agentsArray = response || [];
         console.log("Upline Deleted:", agentsArray);
+        setLoading(false);
+
+        // Reload after 2 seconds
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       })
       .catch((err) => console.error("Error fetching uplines:", err));
 
@@ -116,7 +125,7 @@ export function ProfileNetworkPage() {
                   onClick={() => setOpen(!open)}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
                 >
-                  Take Action
+                  {loading ? "Loading" : "Take Action"}
                   <ChevronDown
                     className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
                       }`}

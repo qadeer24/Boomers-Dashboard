@@ -92,7 +92,20 @@ export default function ProfilePhotoEditor({ onSave, initialImage }) {
     };
     reader.readAsDataURL(file);
   };
+  
+  function base64ToFile(base64, filename) {
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
 
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, { type: mime });
+  }
 
   // Save and update profile picture
   // const handleSave = () => {
@@ -126,7 +139,7 @@ export default function ProfilePhotoEditor({ onSave, initialImage }) {
 
     profileImgRef.current.src = dataUrl;
     setPreview(dataUrl);
-    onSave(dataUrl); // send cropped photo back to parent
+    // onSave(dataUrl); // send cropped photo back to parent
     setModalOpen(false);
   };
 
