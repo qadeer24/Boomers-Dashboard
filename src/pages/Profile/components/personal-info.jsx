@@ -159,7 +159,7 @@ const PersonalInfo = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
-      formData.append("description", data.description); 
+      formData.append("description", data.description);
       // if (file) {
       //   // user uploaded a new file
       //   formData.append("profile", base64ToFile(file, "profile.png"));
@@ -169,6 +169,7 @@ const PersonalInfo = () => {
       //   formData.append("profile", profileFile);
       // }
       // formData.append("profile", data.profile); // This should be a File object
+      console.log("File:", file);
       if (file) {
         formData.append("profile", file);
       }
@@ -181,7 +182,7 @@ const PersonalInfo = () => {
         .then((response) => {
           console.log("Agent updated successfully:", response.data);
           setMessage("Agent updated successfully");
-          setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
+          // setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
         })
         .catch((error) => {
           console.error("Error updating agent:", error);
@@ -281,7 +282,7 @@ const PersonalInfo = () => {
                 <ProfilePhotoEditor
                   initialImage={data.profile}
                   onSave={(newFile) => {
-                    setFile(base64ToFile(newFile, "profile.png"));   // store the new file
+                    setFile(newFile);   // store the new file
                     setUpdate(true);    // mark as updated
                   }}
                 />
@@ -424,6 +425,7 @@ const LicensingInfo = () => {
   const [uplines, setUplines] = useState([]);
   const token = localStorage.getItem("token");
   // Close dropdown when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -621,14 +623,14 @@ const LicensingInfo = () => {
     setMessage("");
     setErrors({});
     try {
+      console.log("upline photo...",file);
       const uplineFormData = {
         name: formData.uplineName,
         email: formData.email,
         website_url: formData.websiteUrl,
         phone: formData.phoneNum,
-        photo: file,
         status: 0,
-
+        ...(file ? { photo: file } : {}), // only include photo if file exists
       }; // Use the current state data
       console.log("Submitting create with data:", uplineFormData);
 
@@ -639,7 +641,7 @@ const LicensingInfo = () => {
           setMessage("Upline created successfully");
           setShowAlert(true);
           getAllUplines();
-          
+
           // Hide alert & close modal after 4 seconds
           setTimeout(() => {
             setShowAlert(false);
@@ -648,7 +650,7 @@ const LicensingInfo = () => {
         })
         .catch((err) => console.error("Error fetching uplines:", err));
 
-      console.log("Upline Added updated:", dataupdated);
+      // console.log("Upline Added updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
       setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
@@ -1275,7 +1277,7 @@ const LicensingInfo = () => {
                   >
                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4.75a1 1 0 1 1 2 0v4.5a1 1 0 0 1-2 0v-4.5ZM10 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
                   </svg>
-                  <span className="font-medium">Upline Created!</span>
+                  <p className="font-medium">Upline Created!</p>
                   <span className="ml-2">You will be updated shortly by admin.</span>
                 </div>
               </div>
@@ -1359,7 +1361,7 @@ const LicensingInfo = () => {
                 onClick={HandleCreateUpline}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
               >
-                Save
+                {loading ? "Loading" : "Save"}
               </button>
             </form>
           </div>
