@@ -13,6 +13,7 @@ const Network = ({ setDropdown, setShowEdit, setUplineId }) => {
   const [submit, setSubmit] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState([]);
   const [items, setItems] = useState([]);
+
   const toggleSelect = (index, item) => {
     setUplineId(item.id);
     setSelectedProjects((prev) =>
@@ -320,7 +321,7 @@ const Network = ({ setDropdown, setShowEdit, setUplineId }) => {
 
   const renderItem = (item, index) => {
     const isSelected = selectedProjects.includes(index);
-    console.log("Single Upline:", item);
+    // console.log("Single Upline:", item);
     return (
       <div
         key={index}

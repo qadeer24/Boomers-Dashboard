@@ -439,6 +439,20 @@ const LicensingInfo = () => {
     };
   }, []);
 
+  function base64ToFile(base64, filename) {
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, { type: mime });
+  }
+
   useEffect(() => {
     // console.log("Hello world")
     handleAutoFetch();
@@ -623,15 +637,16 @@ const LicensingInfo = () => {
     setMessage("");
     setErrors({});
     try {
-      console.log("upline photo...",file);
+      console.log("upline photo...", file);
       const uplineFormData = {
         name: formData.uplineName,
         email: formData.email,
         website_url: formData.websiteUrl,
         phone: formData.phoneNum,
         status: 0,
-        ...(file ? { photo: file } : {}), // only include photo if file exists
-      }; // Use the current state data
+        ...(file ? { photo: file } : {}),
+      };
+
       console.log("Submitting create with data:", uplineFormData);
 
       createUpline(uplineFormData, token)
@@ -653,11 +668,7 @@ const LicensingInfo = () => {
       // console.log("Upline Added updated:", dataupdated);
       // refresh from server
       setTimeout(() => setDataupdated(false), 3000);
-      setTimeout(() => navigate(0), 2000); // Refresh page after 2 seconds
-      // ✅ Refresh page after success
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1000); // wait 1 second so user can see the message
+      setTimeout(() => navigate(0), 2000);
     } catch (error) {
       console.error("Error creating license info:", error);
       setErrors({ general: error?.message || "Create failed" });
