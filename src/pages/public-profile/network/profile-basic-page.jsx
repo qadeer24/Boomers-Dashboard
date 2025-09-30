@@ -22,8 +22,11 @@ import { ChevronDown } from "lucide-react";
 import { Link } from 'lucide-react';
 import { deleteUpline } from '@/utils/agentService';
 import ProfilePhotoEditor from './components/ProfilePhotoEditor';
+import { createUpline } from '@/utils/agentService';
+import { useNavigate } from "react-router-dom";
 
 export function ProfileNetworkPage() {
+  const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
   const [update, setUpdate] = useState(false);
   const [file, setFile] = useState(null);
@@ -36,7 +39,7 @@ export function ProfileNetworkPage() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
-
+  const token = localStorage.getItem("token");
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -75,7 +78,9 @@ export function ProfileNetworkPage() {
 
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [errors, setErrors] = useState(null);
   const [formData, setFormData] = useState({
     image: null,
     uplineName: "",
@@ -83,8 +88,55 @@ export function ProfileNetworkPage() {
     websiteUrl: "",
     phoneNum: "",
   });
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleChange = (e) => {
+  const HandleCreateUpline = async () => {
+    setLoading(true);
+    setMessage("");
+    setErrors({});
+    try {
+      console.log("upline photo...", file);
+      const uplineFormData = {
+        name: formData.uplineName,
+        email: formData.email,
+        website_url: formData.websiteUrl,
+        phone: formData.phoneNum,
+        status: 0,
+        ...(file ? { photo: file } : {}),
+      };
+
+      console.log("Submitting create with data:", uplineFormData);
+
+      createUpline(uplineFormData, token)
+        .then((response) => {
+          const agentsArray = response || [];
+          console.log("Upline created:", agentsArray);
+          setMessage("Upline created successfully");
+          setShowAlert(true);
+
+          // Hide alert & close modal after 4 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+            setIsModalOpen(false);
+            window.location.reload();
+          }, 4000);
+        })
+        .catch((err) => console.error("Error fetching uplines:", err));
+
+      // console.log("Upline Added updated:", dataupdated);
+      // refresh from server
+      // setTimeout(() => setDataupdated(false), 3000);
+      // setTimeout(() => navigate(0), 2000); 
+    } catch (error) {
+      console.error("Error creating license info:", error);
+      setErrors({ general: error?.message || "Create failed" });
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUplineChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -92,13 +144,6 @@ export function ProfileNetworkPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form Submitted:", formData);
-    setIsOpen(false); // close modal after submit
-  };
-
-  console.log("Upline Id: ", uplineId);
   return (
     <Fragment>
       <UserHero2
@@ -122,7 +167,7 @@ export function ProfileNetworkPage() {
               <div className="relative inline-block text-left" ref={dropdownRef}>
                 {/* Trigger Button */}
                 <button
-                  onClick={() => setOpen(!open)}
+                  onClick={(e) => {setOpen(!open); e.stopPropagation();}}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
                 >
                   {loading ? "Loading" : "Take Action"}
@@ -136,13 +181,13 @@ export function ProfileNetworkPage() {
                 {open && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <ul className="py-2 text-gray-700">
-                      <li>
-                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                          View
-                        </button>
-                      </li>
                       {showEdit ? (
                         <div>
+                          <li>
+                            <button className="w-full text-left px-4 py-2 hover:bg-gray-100" onClick={() => {navigate(`/admin/Uplines/detail/${uplineId}`);}}>
+                              View
+                            </button>
+                          </li>
                           <li>
                             <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
                               Edit
@@ -175,7 +220,7 @@ export function ProfileNetworkPage() {
               </div>
 
             )}
-            <Button variant="outline" mode="icon" onClick={() => setIsOpen(true)}>
+            <Button variant="outline" mode="icon" onClick={() => setIsModalOpen(true)}>
               {/* <Link to={'/account/home/settings-sidebar#basic_settings'}> */}
               <Plus />
               {/* </Link> */}
@@ -195,18 +240,36 @@ export function ProfileNetworkPage() {
         <Network setDropdown={setDropdown} setShowEdit={setShowEdit} setUplineId={setUplineId} />
       </Container>
       {/* Modal */}
-      {isOpen && (
+      {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 relative">
+            {showAlert ? (
+              <div className="max-w-full ">
+                <div className="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 shadow-md">
+                  <svg
+                    className="flex-shrink-0 inline w-5 h-5 mr-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4.75a1 1 0 1 1 2 0v4.5a1 1 0 0 1-2 0v-4.5ZM10 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
+                  </svg>
+                  <p className="font-medium">Upline Created!</p>
+                  <span className="ml-2">You will be updated shortly by admin.</span>
+                </div>
+              </div>
+            ) : null}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              style={{ cursor: 'pointer' }}
             >
               ✕
             </button>
             <h2 className="text-xl font-semibold mb-4">Add Upline</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={HandleCreateUpline} className="space-y-4">
               {/* Image Upload */}
               <div>
                 <ProfilePhotoEditor
@@ -225,7 +288,7 @@ export function ProfileNetworkPage() {
                   type="text"
                   name="uplineName"
                   value={formData.uplineName}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -238,7 +301,7 @@ export function ProfileNetworkPage() {
                   type="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -251,7 +314,7 @@ export function ProfileNetworkPage() {
                   type="url"
                   name="websiteUrl"
                   value={formData.websiteUrl}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -264,7 +327,7 @@ export function ProfileNetworkPage() {
                   type="phone"
                   name="phoneNum"
                   value={formData.phoneNum}
-                  onChange={handleChange}
+                  onChange={handleUplineChange}
                   required
                   className="mt-1 block w-full border rounded-lg px-3 py-2 text-sm"
                 />
@@ -272,10 +335,11 @@ export function ProfileNetworkPage() {
 
               {/* Submit */}
               <button
-                type="submit"
+                type="button"
+                onClick={HandleCreateUpline}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
               >
-                Save
+                {loading ? "Loading" : "Save"}
               </button>
             </form>
           </div>

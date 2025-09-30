@@ -649,7 +649,7 @@ const LicensingInfo = () => {
       formData.append("active_eo_policy", selectedEOpolicy);
       formData.append("_method", "PUT"); // if your backend needs method spoofing
 
-      await updateLicenseInfo(formData, id);
+      await updateLicenseInfo(formData, data.id);
 
       setMessage("License info updated successfully");
       setDataupdated(true); // Set to true to indicate data was updated
