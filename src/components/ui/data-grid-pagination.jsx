@@ -10,8 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect } from 'react';
 
-function DataGridPagination(props) {
+function DataGridPagination({ props, setShowingUsers }) {
   const { table, recordCount, isLoading } = useDataGrid();
 
   const defaultProps = {
@@ -53,6 +54,12 @@ function DataGridPagination(props) {
     currentGroupStart + paginationMoreLimit,
     pageCount,
   );
+
+  
+
+  useEffect(() => {
+    setShowingUsers(pageSize);
+  }, [pageSize]);
 
   // Render page buttons based on the current group
   const renderPageButtons = () => {

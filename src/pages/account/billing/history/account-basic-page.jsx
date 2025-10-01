@@ -51,9 +51,9 @@ export function AccountHistoryPage() {
       <Container>
         <ToolbarHeading>
           <div className="flex justify-between">
-          <ToolbarPageTitle />
-          <ToolbarActions>
-            {/* <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <ToolbarPageTitle />
+            <ToolbarActions>
+              {/* <Popover open={isOpen} onOpenChange={setIsOpen}>
               <PopoverTrigger asChild>
                 <Button id="date" variant="outline">
                   <CalendarDays size={16} className="me-0.5" />
@@ -89,7 +89,7 @@ export function AccountHistoryPage() {
                 </div>
               </PopoverContent>
             </Popover> */}
-          </ToolbarActions>
+            </ToolbarActions>
           </div>
           <ToolbarDescription>
             All Agents: 30,053    Active Agents: 20,204    Verified Agents: 18,100    Unverified Agents: 2104
@@ -102,13 +102,14 @@ export function AccountHistoryPage() {
       <Container className="flex justify-between">
         {/* <PageNavbar /> */}
         {/* {settings?.layout === 'demo1' && ( */}
-          <Toolbar>
-            <ToolbarActions>
-              <Button variant="outline" style={{ marginBottom: '1.3rem' }}>Import CSV</Button>
-              <Button variant="primary" style={{ marginBottom: '1.3rem' }}>Add Agents</Button>
-              <Button variant="primary" style={{ marginBottom: '1.3rem' }}>Add Policies</Button>
-            </ToolbarActions>
-          </Toolbar>
+        <div></div>
+        <Toolbar>
+          <ToolbarActions>
+            <Button variant="outline" style={{ marginBottom: '1.3rem' }}>Import CSV</Button>
+            <Button variant="primary" style={{ marginBottom: '1.3rem' }}>Add Agents</Button>
+            <Button variant="primary" style={{ marginBottom: '1.3rem' }}>Add Policies</Button>
+          </ToolbarActions>
+        </Toolbar>
         {/* )} */}
       </Container>
       <Container>

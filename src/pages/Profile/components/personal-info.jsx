@@ -736,7 +736,11 @@ const LicensingInfo = () => {
       formData.append("user_id", id);
       formData.append("social_security_number", data.social_security_number);
       formData.append("resident_license_state_id", data.resident_license_state_id);
-      formData.append("other_licensed_states_id", JSON.stringify(OtherIds));
+      // formData.append("other_licensed_states_id[]", JSON.stringify(OtherIds));
+      OtherIds.forEach((id) => {
+        formData.append("other_licensed_states_id[]", id);
+      });
+
       formData.append("working_with_upline", selectedUpline);
       formData.append("active_eo_policy", selectedEOpolicy);
       formData.append("_method", "PUT"); // if your backend needs method spoofing

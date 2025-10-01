@@ -42,6 +42,7 @@ export function AccountProfilePage() {
       <Container className="flex justify-between">
         {/* <PageNavbar /> */}
         {/* {settings?.layout === 'demo1' && ( */}
+        <div></div>
         <Toolbar>
           <ToolbarActions>
             <Button variant="primary" style={{ marginBottom: '1.3rem' }}>Add Agents</Button>
@@ -50,7 +51,7 @@ export function AccountProfilePage() {
         {/* )} */}
       </Container>
       <Container>
-        <AccountUserProfileContent/>
+        <AccountUserProfileContent />
       </Container>
     </Fragment>
   );
