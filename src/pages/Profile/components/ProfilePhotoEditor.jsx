@@ -119,7 +119,7 @@ export default function ProfilePhotoEditor({ onSave, initialImage }) {
     const dataUrl = canvas.toDataURL("image/png");
 
     // Convert Base64 → File
-    const file = dataURLtoFile(dataUrl, "photo.png");
+    const file = dataURLtoFile(dataUrl, "profile.png");
 
     // Send file back to parent
     onSave(file);
