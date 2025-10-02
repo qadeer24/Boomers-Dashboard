@@ -160,6 +160,7 @@ const PersonalInfo = () => {
       formData.append("dob", data.dob);
       formData.append("gender", data.gender);
       formData.append("description", data.description);
+      formData.append("city", data.city);
       // if (file) {
       //   // user uploaded a new file
       //   formData.append("profile", base64ToFile(file, "profile.png"));
@@ -218,6 +219,7 @@ const PersonalInfo = () => {
     <Card className="min-w-full">
       <CardHeader>
         <CardTitle>Personal Info</CardTitle>
+        {errors ? (<div>{errors.message}</div>) : null}
         {update ?
           <Button onClick={() => setIsOpen(true)} className="bg-blue-500 ps-3 text-white hover:bg-blue-600 cursor-pointer ">Update</Button>
           :
@@ -483,15 +485,20 @@ const LicensingInfo = () => {
           ? updatedStates[licenseArray.resident_license_state_id]
           : null;
 
-      const otherState =
-        licenseArray?.other_licensed_states_id != null
-          ? updatedStates[licenseArray.other_licensed_states_id]
-          : null;
+      const updatedOtherStates = licenseArray.other_states.map(item => ({
+        ...item,
+        name: item.title,  // copy title into name
+        title: undefined   // optional: remove title if you don’t want it
+      }));
+
+      if (licenseArray.working_with_upline === 1) {
+        getAllUplines();
+      };
 
       setSelectedState(residentState || null);
-      setSelectedOtherState(otherState || null);
+      setSelectedOtherState(updatedOtherStates || null);
 
-      console.log("State data:", states);
+      console.log("State data:", licenseArray.other_states);
     } catch (err) {
       console.error("Error fetching agent:", err.message);
       setErrors({ general: err?.message || "Failed to fetch license info" });
@@ -520,6 +527,7 @@ const LicensingInfo = () => {
       ...prev,
       [name]: value,
     }));
+    setUpdate(true);
     setMessage("");
   };
 
@@ -787,6 +795,7 @@ const LicensingInfo = () => {
         return [...safePrev, item];
       }
     });
+    setUpdate(true);
   };
 
 
@@ -808,6 +817,7 @@ const LicensingInfo = () => {
 
       return prev.filter((s) => s.id !== id);
     });
+    setUpdate(true);
   };
 
   const handleCheck = (e) => {
@@ -866,12 +876,13 @@ const LicensingInfo = () => {
   const [isDropdownFocused, setIsDropdownFocused] = useState(false);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  console.log("image:", file);
+  // console.log("image:", file);
   return (
     <form action="">
       <Card className="min-w-full">
         <CardHeader>
           <CardTitle>Licensing Info</CardTitle>
+          {errors ? (<div>{errors.message}</div>) : null}
           {showUpdate ? (
             update ? (
               showErrors ? (
@@ -1049,6 +1060,7 @@ const LicensingInfo = () => {
                         value={query}
                         onChange={(e) => {
                           setQuery(e.target.value);
+                          handleChange(e);
                           setOpen(true);
                         }}
                         onFocus={() => setOpen(true)}
@@ -1096,7 +1108,7 @@ const LicensingInfo = () => {
                   <div className="p-4">
                     <select
                       className="border rounded-lg p-2 w-full"
-                      name="resident_license_state_id"
+                      name="working_with_upline"
                       value={selectedUpline} // controlled by state
                       onChange={(e) => {
                         setSelectedUpline(e.target.value);
