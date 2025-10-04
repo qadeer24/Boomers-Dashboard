@@ -82,7 +82,7 @@ export const MENU_SIDEBAR = [
     children: [
       { title: 'Uplines', path: '/agent/Uplines' },
       { title: 'Individuals', path: '/admin/agent/detail/:id' },
-      { title: 'Policies', path: '/network/get-started' },
+      { title: 'Policies', path: '/admin/all-policies' },
       // { title: 'Carriers', path: '/public-profile/projects/3-columns' },
       // { title: 'Individuals', path: '/network/get-started' },
       // { title: 'Agents', path: '/network/get-started' },

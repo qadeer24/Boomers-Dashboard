@@ -39,7 +39,7 @@ export function ProfileEmptyPage() {
 
       <Container>
         <Navbar>
-          <PageMenu />
+          <div></div>
           <NavbarActions>
             <Button>
               <Users /> Connect
