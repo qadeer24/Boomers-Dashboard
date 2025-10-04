@@ -230,6 +230,7 @@ const Teams = () => {
   const [sorting, setSorting] = useState([{ id: 'updated_at', desc: true }]);
   const [rowSelection, setRowSelection] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [showingUsers, setShowingUsers] = useState(0);
 
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
@@ -403,7 +404,7 @@ const Teams = () => {
           </ScrollArea>
         </CardTable>
         <CardFooter>
-          <DataGridPagination />
+          <DataGridPagination setShowingUsers={setShowingUsers} />
         </CardFooter>
       </Card>
     </DataGrid>

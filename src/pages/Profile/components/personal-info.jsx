@@ -161,6 +161,8 @@ const PersonalInfo = () => {
       formData.append("gender", data.gender);
       formData.append("description", data.description);
       formData.append("city", data.city);
+      formData.append("address", data.address);
+      formData.append("zipcode", data.zipcode);
       // if (file) {
       //   // user uploaded a new file
       //   formData.append("profile", base64ToFile(file, "profile.png"));
@@ -384,7 +386,7 @@ const PersonalInfo = () => {
                 Zip Code
               </TableCell>
               <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                <input type="text" value={data.zip ?? 'N/A'} name='zip' onClick={handleCheck} onChange={handleChange} />
+                <input type="text" value={data.zipcode ?? 'N/A'} name='zipcode' onClick={handleCheck} onChange={handleChange} />
               </TableCell>
             </TableRow>
           </TableBody>
@@ -1847,7 +1849,7 @@ const BankInfo = () => {
       console.log("data.bank_name", data.bank_name);
       console.log("data.account_number", data.account_number);
       console.log("routing_number", data.routing_number);
-      console.log("address", data.address);
+      // console.log("address", data.address);
       console.log("account_type", data.account_type);
       setShowErrors(isValid);   // update state
       console.log("error isValid (calculated):", isValid); // always correct
@@ -2120,14 +2122,6 @@ const BankInfo = () => {
                   </div>
                 </TableCell>
               </TableRow>
-              {/* <TableRow>
-                <TableCell className="py-3 text-secondary-foreground font-normal">
-                  Address:
-                </TableCell>
-                <TableCell className="py-3 text-secondary-foreground text-sm font-normal">
-                  <input type="text" value={data.address ?? 'N/A'} name='address' onChange={handleChange} />
-                </TableCell>
-              </TableRow> */}
             </TableBody>
           </Table>
         </CardContent>

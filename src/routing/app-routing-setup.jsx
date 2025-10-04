@@ -110,6 +110,9 @@ import { AllCarriersPage } from '@/pages/Carriers-All';
 import { CarrierProfilePage } from '@/pages/CarrierInfo';
 import { SingleUplinePage } from '@/pages/SingleUplinePage';
 import { SingleCarrierPage } from '@/pages/SingleCarrierPage';
+import { AllPolicies } from '@/pages/All-Policies';
+import { PolicyForm } from '@/pages/AddPolicies';
+
 // import ResetPassword from '@/pages/ResetPass/ResetPassUrlHandler.jsx';
 // import CreateNewPass from '@/auth/pages/Changepass';
 
@@ -139,6 +142,8 @@ export function AppRoutingSetup() {
           <Route path="/agent/my-contracts" element={<MyContracts />} />
           <Route path="/dark-sidebar" element={<Demo1DarkSidebarPage />} />
           <Route path="/admin/assign/upline" element={<AssignUplinePage />} />
+          <Route path="/admin/all-policies" element={<AllPolicies />} />
+          <Route path="/agent/add-policy" element={<PolicyForm />} />
 
           <Route
             path="/admin/agent/detail/:id"
